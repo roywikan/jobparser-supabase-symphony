@@ -5,16 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { parseJobDetails } from '@/utils/jobParser';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = 'YOUR_SUPABASE_URL';
-const supabaseKey = 'YOUR_SUPABASE_KEY';
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '@/integrations/supabase/client';
 
 const Index = () => {
   const [htmlInput, setHtmlInput] = useState('');
   const [parsedJob, setParsedJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account.",
+    });
+  };
 
   const handleParse = () => {
     try {
@@ -67,7 +71,12 @@ const Index = () => {
 
   return (
     <div className="container mx-auto p-4 space-y-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Job Post Parser</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Job Post Parser</h1>
+        <Button variant="outline" onClick={handleLogout}>
+          Logout
+        </Button>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card className="p-6">
