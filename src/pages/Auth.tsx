@@ -24,7 +24,7 @@ const AuthPage = () => {
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}
         theme="light"
-        providers={[]}
+        providers={["github", "google"]}
       />
     </div>
   );
