@@ -1,4 +1,3 @@
-// Job parser utility functions
 export const parseJobTitle = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
@@ -141,8 +140,17 @@ export const parseDescription = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Get full description from the job description section
-  const descriptionElement = doc.querySelector('.us2QZb');
+  // Try the original selector
+  let descriptionElement = doc.querySelector('.us2QZb');
+  
+  // If not found, try the new selector
+  if (!descriptionElement || !descriptionElement.textContent) {
+    const nguyPeDiv = doc.querySelector('.NgUYpe div');
+    if (nguyPeDiv) {
+      descriptionElement = nguyPeDiv;
+    }
+  }
+  
   return descriptionElement?.textContent?.trim() || '';
 };
 
@@ -154,9 +162,33 @@ export const parseApplyLink = (html: string): string => {
   const applyLinks = doc.querySelectorAll('a[href*="apply"]');
   for (const link of applyLinks) {
     const href = link.getAttribute('href');
-    if (href) return href;
+    if (href) {
+      // Clean the URL before returning
+      return cleanUrl(href);
+    }
   }
   return '';
+};
+
+const cleanUrl = (url: string): string => {
+  // Remove GTM query parameters
+  const urlObj = new URL(url);
+  urlObj.searchParams.delete('utm_campaign');
+  urlObj.searchParams.delete('utm_source');
+  urlObj.searchParams.delete('utm_medium');
+  return urlObj.toString();
+};
+
+const cleanMetaDescription = (text: string): string => {
+  // Remove symbols and non-ASCII characters
+  let cleaned = text.replace(/[^\x00-\x7F]/g, '');
+  // Remove unimportant words
+  const unimportantWords = ['a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
+  cleaned = cleaned.split(' ')
+    .filter(word => !unimportantWords.includes(word.toLowerCase()))
+    .join(' ');
+  // Limit to 20 words
+  return cleaned.split(' ').slice(0, 20).join(' ').trim();
 };
 
 export const generateSlug = (title: string, company: string): string => {
@@ -232,7 +264,7 @@ export const parseJobDetails = (html: string) => {
   console.log('Parsed apply link:', applyLink);
   
   const slug = generateSlug(jobTitle, company);
-  const metaDescription = generateMetaDescription(description);
+  const metaDescription = cleanMetaDescription(description);
   
   const jobData = {
     jobTitle,
