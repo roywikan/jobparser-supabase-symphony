@@ -3,6 +3,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const AuthPage = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN") {
+        toast.success("Successfully signed in!");
         navigate("/");
       }
     });
@@ -25,6 +27,7 @@ const AuthPage = () => {
         appearance={{ theme: ThemeSupa }}
         theme="light"
         providers={["github", "google"]}
+        redirectTo={`${window.location.origin}/`}
       />
     </div>
   );
