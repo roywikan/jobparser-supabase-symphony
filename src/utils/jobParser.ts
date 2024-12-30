@@ -51,11 +51,13 @@ export const parseSalary = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
+  // Try to find salary in RcZtZb spans
   const elements = doc.querySelectorAll('.RcZtZb');
   for (const element of elements) {
     const text = element.textContent?.trim() || '';
-    if (text.includes('$') || text.toLowerCase().includes('hour') || text.toLowerCase().includes('year')) {
-      return text;
+    if (text.includes('Rp') || text.toLowerCase().includes('day') || 
+        text.toLowerCase().includes('month') || text.toLowerCase().includes('year')) {
+      return text.replace(/\s+/g, ' '); // Normalize whitespace
     }
   }
   return '';
@@ -140,18 +142,29 @@ export const parseDescription = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Try the original selector
-  let descriptionElement = doc.querySelector('.us2QZb');
-  
-  // If not found, try the new selector
-  if (!descriptionElement || !descriptionElement.textContent) {
-    const nguyPeDiv = doc.querySelector('.NgUYpe div');
-    if (nguyPeDiv) {
-      descriptionElement = nguyPeDiv;
+  // First try to get content from NgUYpe section
+  const nguyPeDiv = doc.querySelector('.NgUYpe div');
+  if (nguyPeDiv) {
+    // Get all text content, excluding the "..." span
+    const dotsSpan = nguyPeDiv.querySelector('span[jsname="pqRzIf"]');
+    if (dotsSpan) {
+      dotsSpan.remove(); // Remove the "..." span
+    }
+    
+    // Combine all remaining text content
+    const description = Array.from(nguyPeDiv.querySelectorAll('span'))
+      .map(span => span.textContent?.trim())
+      .filter(Boolean)
+      .join('\n');
+      
+    if (description) {
+      return description;
     }
   }
   
-  return descriptionElement?.textContent?.trim() || '';
+  // Fallback to us2QZb if NgUYpe content is not found
+  const us2QZbElement = doc.querySelector('.us2QZb');
+  return us2QZbElement?.textContent?.trim() || '';
 };
 
 export const parseApplyLink = (html: string): string => {
