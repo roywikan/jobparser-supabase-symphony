@@ -38,19 +38,28 @@ export const parseJobType = (html: string): string => {
   const doc = parser.parseFromString(html, 'text/html');
   
   // Updated selector for job type
-  const element = doc.querySelector('.RcZtZb');
-  return element?.textContent?.trim() || '';
+  const elements = doc.querySelectorAll('.RcZtZb');
+  for (const element of elements) {
+    const text = element.textContent?.trim() || '';
+    if (text.includes('Full-time') || text.includes('Part-time') || text.includes('Contract')) {
+      return text;
+    }
+  }
+  return '';
 };
 
 export const parseSalary = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Find salary in the highlights section
-  const salaryElement = Array.from(doc.querySelectorAll('.LevrW'))
-    .find(el => el.textContent?.includes('Salary'));
-    
-  return salaryElement?.textContent?.trim() || '';
+  const elements = doc.querySelectorAll('.RcZtZb');
+  for (const element of elements) {
+    const text = element.textContent?.trim() || '';
+    if (text.includes('$') || text.toLowerCase().includes('hour') || text.toLowerCase().includes('year')) {
+      return text;
+    }
+  }
+  return '';
 };
 
 export const parseQualifications = (html: string): string[] => {
@@ -58,8 +67,15 @@ export const parseQualifications = (html: string): string[] => {
   const doc = parser.parseFromString(html, 'text/html');
   
   // Find qualifications section and list items
-  const qualificationsList = Array.from(doc.querySelectorAll('.zqeyHd'))
-    .find(el => el.previousElementSibling?.textContent?.includes('Qualifications'));
+  const sections = doc.querySelectorAll('.yVFmQd');
+  let qualificationsList: Element | null = null;
+  
+  for (const section of sections) {
+    if (section.textContent?.includes('Qualifications')) {
+      qualificationsList = section.nextElementSibling;
+      break;
+    }
+  }
     
   if (!qualificationsList) {
     console.log('Qualifications section not found');
@@ -76,8 +92,15 @@ export const parseBenefits = (html: string): string[] => {
   const doc = parser.parseFromString(html, 'text/html');
   
   // Find benefits section and list items
-  const benefitsList = Array.from(doc.querySelectorAll('.zqeyHd'))
-    .find(el => el.previousElementSibling?.textContent?.includes('Benefits'));
+  const sections = doc.querySelectorAll('.yVFmQd');
+  let benefitsList: Element | null = null;
+  
+  for (const section of sections) {
+    if (section.textContent?.includes('Benefits')) {
+      benefitsList = section.nextElementSibling;
+      break;
+    }
+  }
     
   if (!benefitsList) {
     console.log('Benefits section not found');
@@ -94,8 +117,15 @@ export const parseResponsibilities = (html: string): string[] => {
   const doc = parser.parseFromString(html, 'text/html');
   
   // Find responsibilities section and list items
-  const responsibilitiesList = Array.from(doc.querySelectorAll('.zqeyHd'))
-    .find(el => el.previousElementSibling?.textContent?.includes('Responsibilities'));
+  const sections = doc.querySelectorAll('.yVFmQd');
+  let responsibilitiesList: Element | null = null;
+  
+  for (const section of sections) {
+    if (section.textContent?.includes('Responsibilities')) {
+      responsibilitiesList = section.nextElementSibling;
+      break;
+    }
+  }
     
   if (!responsibilitiesList) {
     console.log('Responsibilities section not found');
@@ -121,8 +151,12 @@ export const parseApplyLink = (html: string): string => {
   const doc = parser.parseFromString(html, 'text/html');
   
   // Find the first apply button link
-  const applyLink = doc.querySelector('a[title^="Apply"]');
-  return applyLink?.getAttribute('href') || '';
+  const applyLinks = doc.querySelectorAll('a[href*="apply"]');
+  for (const link of applyLinks) {
+    const href = link.getAttribute('href');
+    if (href) return href;
+  }
+  return '';
 };
 
 export const generateSlug = (title: string, company: string): string => {
@@ -132,9 +166,38 @@ export const generateSlug = (title: string, company: string): string => {
     .replace(/(^-|-$)/g, '');
 };
 
-export const generateMetaDescription = (responsibilities: string[]): string => {
-  const desc = responsibilities.join(' ').substring(0, 147).trim();
+export const generateMetaDescription = (description: string): string => {
+  const desc = description.substring(0, 147).trim();
   return desc.length === 147 ? `${desc}...` : desc;
+};
+
+export const generateJsonLd = (jobData: any) => {
+  return {
+    "@context": "https://schema.org/",
+    "@type": "JobPosting",
+    "title": jobData.jobTitle,
+    "description": jobData.description,
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": jobData.company
+    },
+    "jobLocation": {
+      "@type": "Place",
+      "address": jobData.location
+    },
+    "employmentType": jobData.jobType,
+    "datePosted": new Date().toISOString(),
+    "validThrough": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    "baseSalary": {
+      "@type": "MonetaryAmount",
+      "currency": "USD",
+      "value": {
+        "@type": "QuantitativeValue",
+        "value": jobData.salary,
+        "unitText": "YEAR"
+      }
+    }
+  };
 };
 
 export const parseJobDetails = (html: string) => {
@@ -169,9 +232,9 @@ export const parseJobDetails = (html: string) => {
   console.log('Parsed apply link:', applyLink);
   
   const slug = generateSlug(jobTitle, company);
-  const metaDescription = generateMetaDescription(responsibilities);
+  const metaDescription = generateMetaDescription(description);
   
-  return {
+  const jobData = {
     jobTitle,
     company,
     location,
@@ -184,5 +247,12 @@ export const parseJobDetails = (html: string) => {
     applyLink,
     slug,
     metaDescription
+  };
+  
+  const jsonLd = generateJsonLd(jobData);
+  
+  return {
+    ...jobData,
+    jsonLd
   };
 };

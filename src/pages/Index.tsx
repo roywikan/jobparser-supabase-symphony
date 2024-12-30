@@ -45,7 +45,21 @@ const Index = () => {
     try {
       const { error } = await supabase
         .from('job_posts')
-        .insert([parsedJob]);
+        .insert([{
+          job_title: parsedJob.jobTitle,
+          company: parsedJob.company,
+          location: parsedJob.location,
+          job_type: parsedJob.jobType,
+          salary: parsedJob.salary,
+          qualifications: parsedJob.qualifications,
+          benefits: parsedJob.benefits,
+          responsibilities: parsedJob.responsibilities,
+          job_description: parsedJob.description,
+          application_link: parsedJob.applyLink,
+          slug: parsedJob.slug,
+          meta_description: parsedJob.metaDescription,
+          json_ld: parsedJob.jsonLd
+        }]);
         
       if (error) throw error;
       
@@ -93,7 +107,7 @@ const Index = () => {
         </Card>
 
         {parsedJob && (
-          <Card className="p-6">
+          <Card className="p-6 overflow-y-auto max-h-[80vh]">
             <h2 className="text-xl font-semibold mb-4">Parsed Results</h2>
             <div className="space-y-4">
               <div>
@@ -133,6 +147,53 @@ const Index = () => {
                 <Input
                   value={parsedJob.salary}
                   onChange={(e) => setParsedJob({...parsedJob, salary: e.target.value})}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Job Description</label>
+                <Textarea
+                  value={parsedJob.description}
+                  onChange={(e) => setParsedJob({...parsedJob, description: e.target.value})}
+                  className="min-h-[100px]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Qualifications</label>
+                <Textarea
+                  value={parsedJob.qualifications?.join('\n')}
+                  onChange={(e) => setParsedJob({...parsedJob, qualifications: e.target.value.split('\n')})}
+                  className="min-h-[100px]"
+                  placeholder="One qualification per line"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Benefits</label>
+                <Textarea
+                  value={parsedJob.benefits?.join('\n')}
+                  onChange={(e) => setParsedJob({...parsedJob, benefits: e.target.value.split('\n')})}
+                  className="min-h-[100px]"
+                  placeholder="One benefit per line"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Responsibilities</label>
+                <Textarea
+                  value={parsedJob.responsibilities?.join('\n')}
+                  onChange={(e) => setParsedJob({...parsedJob, responsibilities: e.target.value.split('\n')})}
+                  className="min-h-[100px]"
+                  placeholder="One responsibility per line"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Application Link</label>
+                <Input
+                  value={parsedJob.applyLink}
+                  onChange={(e) => setParsedJob({...parsedJob, applyLink: e.target.value})}
                 />
               </div>
               
