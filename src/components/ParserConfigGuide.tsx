@@ -37,6 +37,19 @@ const ParserConfigGuide = () => (
       </div>
 
       <div>
+        <h3 className="font-medium">Authentication Redirect URL</h3>
+        <p className="text-sm text-gray-600">
+          To change the redirect URL after GitHub authentication (default: localhost:3000), update the Site URL in your Supabase project:
+        </p>
+        <ol className="list-decimal list-inside text-sm text-gray-600 mt-2 space-y-1">
+          <li>Go to your Supabase project dashboard</li>
+          <li>Navigate to Authentication {'>'} URL Configuration</li>
+          <li>Update the Site URL field with your production URL</li>
+          <li>Click Save to apply the changes</li>
+        </ol>
+      </div>
+
+      <div>
         <h3 className="font-medium">HTML Copy Bookmarklet</h3>
         <p className="text-sm text-gray-600 mb-2">
           Use this bookmarklet to easily copy the required HTML content. Create a new bookmark with this JavaScript code as the URL:
