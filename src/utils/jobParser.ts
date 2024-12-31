@@ -51,12 +51,33 @@ export const parseSalary = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
+  // Define currency symbols and time periods
+  const currencySymbols = ['Rp', 'US$', 'AU$', 'S$', 'SGD', 'IDR', 'AED', '₹', '£'];
+  const timePeriods = ['per day', 'a day', 'per hour', 'an hour', 'per month', 'a month', 
+                       'per week', 'a week', 'per year', 'a year'];
+  const magnitudes = ['K', 'M'];
+  
   // Try to find salary in RcZtZb spans
   const elements = doc.querySelectorAll('.RcZtZb');
   for (const element of elements) {
     const text = element.textContent?.trim() || '';
-    if (text.includes('Rp') || text.toLowerCase().includes('day') || 
-        text.toLowerCase().includes('month') || text.toLowerCase().includes('year')) {
+    
+    // Check if text contains any currency symbol
+    const hasCurrency = currencySymbols.some(symbol => text.includes(symbol));
+    
+    // Check if text contains any time period
+    const hasTimePeriod = timePeriods.some(period => 
+      text.toLowerCase().includes(period.toLowerCase())
+    );
+    
+    // Check if text contains any magnitude
+    const hasMagnitude = magnitudes.some(mag => text.includes(mag));
+    
+    // Check if text contains numbers
+    const hasNumbers = /\d/.test(text);
+    
+    // Only return if it looks like a salary (has currency/magnitude and numbers)
+    if (hasNumbers && (hasCurrency || hasMagnitude) && hasTimePeriod) {
       return text.replace(/\s+/g, ' '); // Normalize whitespace
     }
   }
@@ -142,23 +163,26 @@ export const parseDescription = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // First try to get content from NgUYpe section
+  // First try to get content from NgUYpe section with FkMLeb header
   const nguyPeDiv = doc.querySelector('.NgUYpe div');
   if (nguyPeDiv) {
-    // Get all text content, excluding the "..." span
-    const dotsSpan = nguyPeDiv.querySelector('span[jsname="pqRzIf"]');
-    if (dotsSpan) {
-      dotsSpan.remove(); // Remove the "..." span
-    }
-    
-    // Combine all remaining text content
-    const description = Array.from(nguyPeDiv.querySelectorAll('span'))
-      .map(span => span.textContent?.trim())
-      .filter(Boolean)
-      .join('\n');
+    const header = nguyPeDiv.querySelector('.FkMLeb');
+    if (header && header.textContent?.includes('Job description')) {
+      // Remove the "..." span if present
+      const dotsSpan = nguyPeDiv.querySelector('span[jsname="pqRzIf"]');
+      if (dotsSpan) {
+        dotsSpan.remove();
+      }
       
-    if (description) {
-      return description;
+      // Get all text content
+      const description = Array.from(nguyPeDiv.querySelectorAll('span'))
+        .map(span => span.textContent?.trim())
+        .filter(Boolean)
+        .join('\n');
+        
+      if (description) {
+        return description;
+      }
     }
   }
   
@@ -195,11 +219,13 @@ const cleanUrl = (url: string): string => {
 const cleanMetaDescription = (text: string): string => {
   // Remove symbols and non-ASCII characters
   let cleaned = text.replace(/[^\x00-\x7F]/g, '');
+  
   // Remove unimportant words
   const unimportantWords = ['a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
   cleaned = cleaned.split(' ')
     .filter(word => !unimportantWords.includes(word.toLowerCase()))
     .join(' ');
+    
   // Limit to 20 words
   return cleaned.split(' ').slice(0, 20).join(' ').trim();
 };
