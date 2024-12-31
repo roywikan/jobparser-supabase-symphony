@@ -1,8 +1,10 @@
+import { cleanMetaDescription, cleanUrl, formatListContent } from './jobParserUtils/textCleaner';
+import { generateSlug, generateJsonLd } from './jobParserUtils/schemaGenerator';
+
 export const parseJobTitle = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Updated selector for Google Jobs format
   const titleElement = doc.querySelector('.LZAQDf');
   if (titleElement) {
     return titleElement.textContent?.trim() || '';
@@ -16,7 +18,6 @@ export const parseCompanyAndLocation = (html: string): { company: string; locati
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Updated selector for Google Jobs format
   const element = doc.querySelector('.waQ7qe');
   if (!element) {
     console.log('Company and location container not found');
@@ -36,7 +37,6 @@ export const parseJobType = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Updated selector for job type
   const elements = doc.querySelectorAll('.RcZtZb');
   for (const element of elements) {
     const text = element.textContent?.trim() || '';
@@ -51,34 +51,24 @@ export const parseSalary = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Define currency symbols and time periods
   const currencySymbols = ['Rp', 'US$', 'AU$', 'S$', 'SGD', 'IDR', 'AED', '₹', '£'];
   const timePeriods = ['per day', 'a day', 'per hour', 'an hour', 'per month', 'a month', 
                        'per week', 'a week', 'per year', 'a year'];
   const magnitudes = ['K', 'M'];
   
-  // Try to find salary in RcZtZb spans
   const elements = doc.querySelectorAll('.RcZtZb');
   for (const element of elements) {
     const text = element.textContent?.trim() || '';
     
-    // Check if text contains any currency symbol
     const hasCurrency = currencySymbols.some(symbol => text.includes(symbol));
-    
-    // Check if text contains any time period
     const hasTimePeriod = timePeriods.some(period => 
       text.toLowerCase().includes(period.toLowerCase())
     );
-    
-    // Check if text contains any magnitude
     const hasMagnitude = magnitudes.some(mag => text.includes(mag));
-    
-    // Check if text contains numbers
     const hasNumbers = /\d/.test(text);
     
-    // Only return if it looks like a salary (has currency/magnitude and numbers)
     if (hasNumbers && (hasCurrency || hasMagnitude) && hasTimePeriod) {
-      return text.replace(/\s+/g, ' '); // Normalize whitespace
+      return text.replace(/\s+/g, ' ');
     }
   }
   return '';
@@ -88,7 +78,6 @@ export const parseQualifications = (html: string): string[] => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Find qualifications section and list items
   const sections = doc.querySelectorAll('.yVFmQd');
   let qualificationsList: Element | null = null;
   
@@ -104,16 +93,17 @@ export const parseQualifications = (html: string): string[] => {
     return [];
   }
   
-  return Array.from(qualificationsList.querySelectorAll('.LevrW'))
+  const items = Array.from(qualificationsList.querySelectorAll('.LevrW'))
     .map(item => item.textContent?.trim() || '')
     .filter(Boolean);
+    
+  return items.map(item => formatListContent(item));
 };
 
 export const parseBenefits = (html: string): string[] => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Find benefits section and list items
   const sections = doc.querySelectorAll('.yVFmQd');
   let benefitsList: Element | null = null;
   
@@ -129,16 +119,17 @@ export const parseBenefits = (html: string): string[] => {
     return [];
   }
   
-  return Array.from(benefitsList.querySelectorAll('.LevrW'))
+  const items = Array.from(benefitsList.querySelectorAll('.LevrW'))
     .map(item => item.textContent?.trim() || '')
     .filter(Boolean);
+    
+  return items.map(item => formatListContent(item));
 };
 
 export const parseResponsibilities = (html: string): string[] => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Find responsibilities section and list items
   const sections = doc.querySelectorAll('.yVFmQd');
   let responsibilitiesList: Element | null = null;
   
@@ -154,121 +145,53 @@ export const parseResponsibilities = (html: string): string[] => {
     return [];
   }
   
-  return Array.from(responsibilitiesList.querySelectorAll('.LevrW'))
+  const items = Array.from(responsibilitiesList.querySelectorAll('.LevrW'))
     .map(item => item.textContent?.trim() || '')
     .filter(Boolean);
+    
+  return items.map(item => formatListContent(item));
 };
 
 export const parseDescription = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // First try to get content from NgUYpe section with FkMLeb header
   const nguyPeDiv = doc.querySelector('.NgUYpe div');
   if (nguyPeDiv) {
     const header = nguyPeDiv.querySelector('.FkMLeb');
     if (header && header.textContent?.includes('Job description')) {
-      // Remove the "..." span if present
       const dotsSpan = nguyPeDiv.querySelector('span[jsname="pqRzIf"]');
       if (dotsSpan) {
         dotsSpan.remove();
       }
       
-      // Get all text content
       const description = Array.from(nguyPeDiv.querySelectorAll('span'))
         .map(span => span.textContent?.trim())
         .filter(Boolean)
         .join('\n');
         
       if (description) {
-        return description;
+        return formatListContent(description);
       }
     }
   }
   
-  // Fallback to us2QZb if NgUYpe content is not found
   const us2QZbElement = doc.querySelector('.us2QZb');
-  return us2QZbElement?.textContent?.trim() || '';
+  return formatListContent(us2QZbElement?.textContent?.trim() || '');
 };
 
 export const parseApplyLink = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Find the first apply button link
   const applyLinks = doc.querySelectorAll('a[href*="apply"]');
   for (const link of applyLinks) {
     const href = link.getAttribute('href');
     if (href) {
-      // Clean the URL before returning
       return cleanUrl(href);
     }
   }
   return '';
-};
-
-const cleanUrl = (url: string): string => {
-  // Remove GTM query parameters
-  const urlObj = new URL(url);
-  urlObj.searchParams.delete('utm_campaign');
-  urlObj.searchParams.delete('utm_source');
-  urlObj.searchParams.delete('utm_medium');
-  return urlObj.toString();
-};
-
-const cleanMetaDescription = (text: string): string => {
-  // Remove symbols and non-ASCII characters
-  let cleaned = text.replace(/[^\x00-\x7F]/g, '');
-  
-  // Remove unimportant words
-  const unimportantWords = ['a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
-  cleaned = cleaned.split(' ')
-    .filter(word => !unimportantWords.includes(word.toLowerCase()))
-    .join(' ');
-    
-  // Limit to 20 words
-  return cleaned.split(' ').slice(0, 20).join(' ').trim();
-};
-
-export const generateSlug = (title: string, company: string): string => {
-  const combined = `${title}-${company}`.toLowerCase();
-  return combined
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-};
-
-export const generateMetaDescription = (description: string): string => {
-  const desc = description.substring(0, 147).trim();
-  return desc.length === 147 ? `${desc}...` : desc;
-};
-
-export const generateJsonLd = (jobData: any) => {
-  return {
-    "@context": "https://schema.org/",
-    "@type": "JobPosting",
-    "title": jobData.jobTitle,
-    "description": jobData.description,
-    "hiringOrganization": {
-      "@type": "Organization",
-      "name": jobData.company
-    },
-    "jobLocation": {
-      "@type": "Place",
-      "address": jobData.location
-    },
-    "employmentType": jobData.jobType,
-    "datePosted": new Date().toISOString(),
-    "validThrough": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    "baseSalary": {
-      "@type": "MonetaryAmount",
-      "currency": "USD",
-      "value": {
-        "@type": "QuantitativeValue",
-        "value": jobData.salary,
-        "unitText": "YEAR"
-      }
-    }
-  };
 };
 
 export const parseJobDetails = (html: string) => {
