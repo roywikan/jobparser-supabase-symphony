@@ -1,5 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { Copy } from "lucide-react";
 
 interface JobPostPreviewProps {
   parsedJob: any;
@@ -71,9 +74,32 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
 </body>
 </html>`;
 
+  const handleCopy = async () => {
+    try {
+      // Clear clipboard first
+      await navigator.clipboard.writeText('');
+      // Copy new content
+      await navigator.clipboard.writeText(htmlTemplate);
+      toast.success("HTML copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy HTML to clipboard");
+    }
+  };
+
   return (
     <Card className="p-6">
-      <h2 className="text-xl font-semibold mb-4">HTML Preview</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">HTML Preview</h2>
+        <Button 
+          onClick={handleCopy}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          <Copy className="h-4 w-4" />
+          Copy HTML
+        </Button>
+      </div>
       <Textarea
         value={htmlTemplate}
         readOnly

@@ -1,6 +1,9 @@
 export const cleanMetaDescription = (text: string): string => {
+  // Remove unwanted text
+  let cleaned = text.replace("Job highlightsIdentified Google from original job post", "");
+  
   // Remove symbols and non-ASCII characters
-  let cleaned = text.replace(/[^\x00-\x7F]/g, '');
+  cleaned = cleaned.replace(/[^\x00-\x7F]/g, '');
   
   // Remove unimportant words
   const unimportantWords = ['a', 'an', 'the', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
@@ -22,11 +25,14 @@ export const cleanUrl = (url: string): string => {
 };
 
 export const formatListContent = (content: string): string => {
-  // Replace "<br>•" with "<li>" and wrap in "<ul>"
-  if (!content) return '';
+  // Remove unwanted text
+  let cleaned = content.replace("Job highlightsIdentified Google from original job post", "");
   
-  const items = content.split('<br>•').filter(Boolean);
-  if (items.length <= 1) return content;
+  // Replace "<br>•" with "<li>" and wrap in "<ul>"
+  if (!cleaned) return '';
+  
+  const items = cleaned.split('<br>•').filter(Boolean);
+  if (items.length <= 1) return cleaned;
   
   const listItems = items.map(item => `<li>${item.trim()}</li>`).join('');
   return `<ul>${listItems}</ul>`;
