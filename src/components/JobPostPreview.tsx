@@ -102,7 +102,7 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     </main>
     <footer>
         <p>Published on ${date}</p>
-        <p>Created by <a href="https://job.web.id">Andreas Wikan</a>, <a href="https://lovable.dev">Lovable</a>, <a href="https://supabase.com">Supabase</a> and <a href="https://netlify.com">Netlify</a></p>
+        <p>Created by <a href="https://job.web.id">Andreas Wikan</a>
         <p>&copy; ${new Date().getFullYear()} All rights reserved.</p>
     </footer>
     <p><script type="application/ld+json">${JSON.stringify(job.jsonLd, null, 2)}</script></p>
