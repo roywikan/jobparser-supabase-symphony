@@ -38,10 +38,8 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     metaDescription: cleanField(parsedJob.metaDescription),
     slug: cleanField(parsedJob.slug),
   };
-  
-  const [htmlContent, setHtmlContent] = useState(generateHtmlTemplate(cleanedJob, formattedDate));
 
-  const generateHtmlTemplate = (job, date) => `<!DOCTYPE html>
+  const generateHtmlTemplate = (job: any, date: string) => `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -107,6 +105,8 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     <p><script type="application/ld+json">${JSON.stringify(job.jsonLd, null, 2)}</script></p>
 </body>
 </html>`;
+
+  const [htmlContent, setHtmlContent] = useState(generateHtmlTemplate(cleanedJob, formattedDate));
 
   const handleCopy = async () => {
     try {
