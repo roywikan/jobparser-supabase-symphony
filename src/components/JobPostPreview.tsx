@@ -3,6 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Copy } from "lucide-react";
+import { useState } from "react";
 
 interface JobPostPreviewProps {
   parsedJob: any;
@@ -13,13 +14,13 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
 
   const formattedDate = new Date().toISOString();
   
-  // Clean the unwanted text from all fields and handle bullet points
+  // Clean the unwanted text from all fields and handle bullet points with HTML tags
   const cleanField = (field: string) => {
     if (!field) return '';
     return field
       .replace(/Identified by Google from the original job post/g, '')
       .replace(/Job highlightsIdentified Google from original job post/g, '')
-      .replace(/(?:• )+/g, '- ') // Replace consecutive bullet points with a single dash
+      .replace(/(?:• )+/g, '<li>- ') // Replace consecutive bullet points with HTML list item tag
       .trim();
   };
 
@@ -38,79 +39,78 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     slug: cleanField(parsedJob.slug),
   };
   
-  const htmlTemplate = `<!DOCTYPE html>
+  const [htmlContent, setHtmlContent] = useState(generateHtmlTemplate(cleanedJob, formattedDate));
+
+  const generateHtmlTemplate = (job, date) => `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="${cleanedJob.metaDescription}">
-    <title>${cleanedJob.jobTitle} - ${cleanedJob.company}</title>
+    <meta name="description" content="${job.metaDescription}">
+    <title>${job.jobTitle} - ${job.company}</title>
 </head>
 <body>
     <header>
-        <h1>${cleanedJob.jobTitle}</h1>
-        <p><strong>Company:</strong> ${cleanedJob.company}</p>
-        <p><strong>Location:</strong> ${cleanedJob.location}</p>
-        <p><strong>Job Type:</strong> ${cleanedJob.jobType}</p>
-        <p><strong>Salary:</strong> ${cleanedJob.salary}</p>
+        <h1>${job.jobTitle}</h1>
+        <p><strong>Company:</strong> ${job.company}</p>
+        <p><strong>Location:</strong> ${job.location}</p>
+        <p><strong>Job Type:</strong> ${job.jobType}</p>
+        <p><strong>Salary:</strong> ${job.salary}</p>
     </header>
     <main>
         <section>
             <h2>Job Description</h2>
-            <p>${cleanedJob.description}</p>
+            <p>${job.description}</p>
         </section>
         <section>
             <h2>Qualifications</h2>
             <ul>
-                ${cleanedJob.qualifications?.map(qual => `<li>${qual}</li>`).join('\n                ') || ''}
+                ${job.qualifications?.map(qual => `<li>- ${qual}</li>`).join('\n                ') || ''}
             </ul>
         </section>
         <section>
             <h2>Benefits</h2>
             <ul>
-                ${cleanedJob.benefits?.map(benefit => `<li>${benefit}</li>`).join('\n                ') || ''}
+                ${job.benefits?.map(benefit => `<li>- ${benefit}</li>`).join('\n                ') || ''}
             </ul>
         </section>
         <section>
             <h2>Responsibilities</h2>
             <ul>
-                ${cleanedJob.responsibilities?.map(resp => `<li>${resp}</li>`).join('\n                ') || ''}
+                ${job.responsibilities?.map(resp => `<li>- ${resp}</li>`).join('\n                ') || ''}
             </ul>
         </section>
         <section>
             <h2>How to Apply</h2>
-            <a href="${cleanedJob.applyLink}" rel="nofollow">Apply Here</a>
+            <a href="${job.applyLink}" rel="nofollow">Apply Here</a>
         </section>
         <section>
             <h2>Location Map</h2>
-            <p><strong>Location Map:</strong> <div class="mapouter"><div class="gmap_canvas"><iframe loading="lazy" id="gmap_canvas" title="${cleanedJob.jobTitle}" src="https://maps.google.com/maps?q=${encodeURIComponent(cleanedJob.location)}&amp;t=&amp;z=18&amp;ie=UTF8&amp;iwloc=&amp;output=embed" width="100%" height="240px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="width: 100%;"></iframe></div></div></p>
+            <p><strong>Location Map:</strong> <div class="mapouter"><div class="gmap_canvas"><iframe loading="lazy" id="gmap_canvas" title="${job.jobTitle}" src="https://maps.google.com/maps?q=${encodeURIComponent(job.location)}&amp;t=&amp;z=18&amp;ie=UTF8&amp;iwloc=&amp;output=embed" width="100%" height="240px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="width: 100%;"></iframe></div></div></p>
         </section>
         <section>
             <h2>Snippet</h2>
             <blockquote>
-                ${cleanedJob.metaDescription}
+                ${job.metaDescription}
             </blockquote>
         </section>
         <section>
             <h2>Slug</h2>
             <textarea>
-                ${cleanedJob.slug}
+                ${job.slug}
             </textarea>
         </section>
     </main>
     <footer>
-        <p>Published on ${formattedDate}</p>
+        <p>Published on ${date}</p>
     </footer>
-    <p><script type="application/ld+json">${JSON.stringify(cleanedJob.jsonLd, null, 2)}</script></p>
+    <p><script type="application/ld+json">${JSON.stringify(job.jsonLd, null, 2)}</script></p>
 </body>
 </html>`;
 
   const handleCopy = async () => {
     try {
-      // Clear clipboard first
-      await navigator.clipboard.writeText('');
-      // Copy new content
-      await navigator.clipboard.writeText(htmlTemplate);
+      await navigator.clipboard.writeText(htmlContent);
       toast.success("HTML copied to clipboard!");
     } catch (err) {
       toast.error("Failed to copy HTML to clipboard");
@@ -132,8 +132,8 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
         </Button>
       </div>
       <Textarea
-        value={htmlTemplate}
-        readOnly
+        value={htmlContent}
+        onChange={(e) => setHtmlContent(e.target.value)}
         className="min-h-[300px] font-mono text-sm"
       />
     </Card>

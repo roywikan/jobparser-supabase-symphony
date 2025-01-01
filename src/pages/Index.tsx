@@ -198,6 +198,14 @@ const Index = () => {
                   onChange={(e) => setParsedJob({...parsedJob, applyLink: e.target.value})}
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Slug</label>
+                <Input
+                  value={parsedJob.slug}
+                  onChange={(e) => setParsedJob({...parsedJob, slug: e.target.value})}
+                />
+              </div>
               
               <Button
                 onClick={handleSubmit}
