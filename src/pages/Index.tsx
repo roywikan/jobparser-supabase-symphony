@@ -8,6 +8,7 @@ import { parseJobDetails } from '@/utils/jobParser';
 import { supabase } from '@/integrations/supabase/client';
 import JobPostPreview from '@/components/JobPostPreview';
 import ParserConfigGuide from '@/components/ParserConfigGuide';
+import Footer from '@/components/Footer';
 
 const Index = () => {
   const [htmlInput, setHtmlInput] = useState('');
@@ -206,6 +207,23 @@ const Index = () => {
                   onChange={(e) => setParsedJob({...parsedJob, slug: e.target.value})}
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">JSON-LD</label>
+                <Textarea
+                  value={JSON.stringify(parsedJob.jsonLd, null, 2)}
+                  onChange={(e) => {
+                    try {
+                      const newJsonLd = JSON.parse(e.target.value);
+                      setParsedJob({...parsedJob, jsonLd: newJsonLd});
+                    } catch (err) {
+                      console.error('Invalid JSON:', err);
+                    }
+                  }}
+                  className="min-h-[200px] font-mono text-sm"
+                  placeholder="Edit JSON-LD schema here..."
+                />
+              </div>
               
               <Button
                 onClick={handleSubmit}
@@ -221,6 +239,7 @@ const Index = () => {
 
       {parsedJob && <JobPostPreview parsedJob={parsedJob} />}
       <ParserConfigGuide />
+      <Footer />
     </div>
   );
 };
