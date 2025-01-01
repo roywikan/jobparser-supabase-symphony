@@ -13,10 +13,14 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
 
   const formattedDate = new Date().toISOString();
   
-  // Clean the unwanted text from all fields
+  // Clean the unwanted text from all fields and handle bullet points
   const cleanField = (field: string) => {
     if (!field) return '';
-    return field.replace(/Job highlightsIdentified Google from original job post/g, '').trim();
+    return field
+      .replace(/Identified by Google from the original job post/g, '')
+      .replace(/Job highlightsIdentified Google from original job post/g, '')
+      .replace(/(?:• )+/g, '- ') // Replace consecutive bullet points with a single dash
+      .trim();
   };
 
   const cleanedJob = {
@@ -31,6 +35,7 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     benefits: parsedJob.benefits?.map(cleanField),
     responsibilities: parsedJob.responsibilities?.map(cleanField),
     metaDescription: cleanField(parsedJob.metaDescription),
+    slug: cleanField(parsedJob.slug),
   };
   
   const htmlTemplate = `<!DOCTYPE html>
@@ -85,6 +90,12 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
             <blockquote>
                 ${cleanedJob.metaDescription}
             </blockquote>
+        </section>
+        <section>
+            <h2>Slug</h2>
+            <textarea>
+                ${cleanedJob.slug}
+            </textarea>
         </section>
     </main>
     <footer>
