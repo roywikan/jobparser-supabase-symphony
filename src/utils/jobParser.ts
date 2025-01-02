@@ -1,5 +1,6 @@
 import { cleanMetaDescription, cleanUrl, formatListContent } from './jobParserUtils/textCleaner';
 import { generateSlug, generateJsonLd } from './jobParserUtils/schemaGenerator';
+import { getRandomJobImage } from './jobParserUtils/imageUrls';
 
 export const parseJobTitle = (html: string): string => {
   const parser = new DOMParser();
@@ -227,6 +228,8 @@ export const parseJobDetails = (html: string) => {
   
   const slug = generateSlug(jobTitle, company);
   const metaDescription = cleanMetaDescription(description);
+  const imageUrl = getRandomJobImage();
+  console.log('Selected random image URL:', imageUrl);
   
   const jobData = {
     jobTitle,
@@ -240,7 +243,8 @@ export const parseJobDetails = (html: string) => {
     description,
     applyLink,
     slug,
-    metaDescription
+    metaDescription,
+    imageUrl
   };
   
   const jsonLd = generateJsonLd(jobData);
