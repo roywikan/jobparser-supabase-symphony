@@ -14,7 +14,6 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
 
   const formattedDate = new Date().toISOString();
   
-  // Clean the unwanted text from all fields and handle bullet points with HTML tags
   const cleanField = (field: string) => {
     if (!field) return '';
     return field
@@ -27,6 +26,7 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
 
   const cleanedJob = {
     ...parsedJob,
+    imageUrl: cleanField(parsedJob.imageUrl),
     jobTitle: cleanField(parsedJob.jobTitle),
     company: cleanField(parsedJob.company),
     location: cleanField(parsedJob.location),
@@ -46,10 +46,14 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="${job.metaDescription}">
+    <meta property="og:title" content="${job.jobTitle} - ${job.company}">
+    <meta property="og:description" content="${job.metaDescription}">
+    ${job.imageUrl ? `<meta property="og:image" content="${job.imageUrl}">` : ''}
     <title>${job.jobTitle} - ${job.company}</title>
 </head>
 <body>
     <header>
+        ${job.imageUrl ? `<img src="${job.imageUrl}" alt="${job.jobTitle}" class="featured-image">` : ''}
         <h1>${job.jobTitle}</h1>
         <p><strong>Company:</strong> ${job.company}</p>
         <p><strong>Location:</strong> ${job.location}</p>
@@ -102,10 +106,13 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     </main>
     <footer>
         <p>Published on ${date}</p>
-        <p>Created by <a href="https://job.web.id">Andreas Wikan</a>
+        <p>Created by <a href="https://job.web.id">Andreas Wikan</a></p>
         <p>&copy; ${new Date().getFullYear()} All rights reserved.</p>
     </footer>
-    <p><script type="application/ld+json">${JSON.stringify(job.jsonLd, null, 2)}</script></p>
+    <p><script type="application/ld+json">${JSON.stringify({
+      ...job.jsonLd,
+      image: job.imageUrl || undefined
+    }, null, 2)}</script></p>
 </body>
 </html>`;
 

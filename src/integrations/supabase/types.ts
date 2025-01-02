@@ -17,6 +17,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           id: string
+          image_url: string | null
           job_description: string | null
           job_title: string
           job_type: string | null
@@ -36,6 +37,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          image_url?: string | null
           job_description?: string | null
           job_title: string
           job_type?: string | null
@@ -55,6 +57,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           id?: string
+          image_url?: string | null
           job_description?: string | null
           job_title?: string
           job_type?: string | null

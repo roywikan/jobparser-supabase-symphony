@@ -61,7 +61,8 @@ const Index = () => {
           application_link: parsedJob.applyLink,
           slug: parsedJob.slug,
           meta_description: parsedJob.metaDescription,
-          json_ld: parsedJob.jsonLd
+          json_ld: parsedJob.jsonLd,
+          image_url: parsedJob.imageUrl
         }]);
         
       if (error) throw error;
@@ -205,6 +206,15 @@ const Index = () => {
                 <Input
                   value={parsedJob.slug}
                   onChange={(e) => setParsedJob({...parsedJob, slug: e.target.value})}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Featured Image URL</label>
+                <Input
+                  value={parsedJob.imageUrl || ''}
+                  onChange={(e) => setParsedJob({...parsedJob, imageUrl: e.target.value})}
+                  placeholder="https://example.com/image.jpg"
                 />
               </div>
 
