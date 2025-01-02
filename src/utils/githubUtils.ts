@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 export const sendToGithub = async (htmlContent: string, slug: string) => {
   try {
     const { data, error } = await supabase.functions.invoke('github-commit', {
