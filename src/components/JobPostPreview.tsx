@@ -2,8 +2,9 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Copy } from "lucide-react";
+import { Copy, Github } from "lucide-react";
 import { useState } from "react";
+import { sendToGithub } from "@/utils/githubUtils";
 
 interface JobPostPreviewProps {
   parsedJob: any;
@@ -19,8 +20,8 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     return field
       .replace(/Identified by Google from the original job post/g, '')
       .replace(/Job highlightsIdentified Google from original job post/g, '')
-      .replace(/(?:• )+/g, '<BR>- ') // Replace consecutive bullet points with BR and dash
-      .replace(/([.!?])([A-Z])/g, '$1 $2') // Add space after punctuation followed by capital letter
+      .replace(/(?:• )+/g, '<BR>- ')
+      .replace(/([.!?])([A-Z])/g, '$1 $2')
       .trim();
   };
 
@@ -127,19 +128,44 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     }
   };
 
+  const handleSendToGithub = async () => {
+    try {
+      const result = await sendToGithub(htmlContent, cleanedJob.slug);
+      if (result.success) {
+        toast.success("Successfully sent to GitHub repository!");
+      } else {
+        toast.error("Failed to send to GitHub repository");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Failed to send to GitHub repository");
+    }
+  };
+
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">HTML Preview</h2>
-        <Button 
-          onClick={handleCopy}
-          variant="outline"
-          size="sm"
-          className="flex items-center gap-2"
-        >
-          <Copy className="h-4 w-4" />
-          Copy HTML
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleCopy}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Copy className="h-4 w-4" />
+            Copy HTML
+          </Button>
+          <Button
+            onClick={handleSendToGithub}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <Github className="h-4 w-4" />
+            Send to GitHub
+          </Button>
+        </div>
       </div>
       <Textarea
         value={htmlContent}
