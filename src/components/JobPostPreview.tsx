@@ -51,15 +51,20 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     <meta property="og:description" content="${job.metaDescription}">
     ${job.imageUrl ? `<meta property="og:image" content="${job.imageUrl}">` : ''}
     <title>${job.jobTitle} - ${job.company}</title>
+    <link rel="stylesheet" href="/post.css">
 </head>
 <body>
     <header>
-        ${job.imageUrl ? `<img src="${job.imageUrl}" alt="${job.jobTitle}" class="featured-image">` : ''}
-        <h1>${job.jobTitle}</h1>
-        <p><strong>Company:</strong> ${job.company}</p>
-        <p><strong>Location:</strong> ${job.location}</p>
-        <p><strong>Job Type:</strong> ${job.jobType}</p>
-        <p><strong>Salary:</strong> ${job.salary}</p>
+      <nav class="menu">
+        <a href="/">Home</a> | 
+        <a href="https://job.web.id/">Jobs</a>
+      </nav>
+      ${job.imageUrl ? `<img src="${job.imageUrl}" alt="${job.jobTitle}" class="featured-image">` : ''}
+      <h1>${job.jobTitle}</h1>
+      <p><strong>Company:</strong> ${job.company}</p>
+      <p><strong>Location:</strong> ${job.location}</p>
+      <p><strong>Job Type:</strong> ${job.jobType}</p>
+      <p><strong>Salary:</strong> ${job.salary}</p>
     </header>
     <main>
         <section>
