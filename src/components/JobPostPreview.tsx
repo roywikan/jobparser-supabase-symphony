@@ -20,9 +20,19 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     return field
       .replace(/Identified by Google from the original job post/g, '')
       .replace(/Job highlightsIdentified Google from original job post/g, '')
+      .replace(/<br>/g, ' ')  // Replace single <br> with a space
       .replace(/(?:• )+/g, '<BR>- ')
       .replace(/([.!?])([A-Z])/g, '$1 $2')
       .trim();
+  };
+
+  const generateHashtags = (title: string) => {
+    return title
+      .toLowerCase()
+      .split(/[\s-]+/)
+      .filter(word => word.length > 2)
+      .map(word => `#${word}`)
+      .join(', ');
   };
 
   const cleanedJob = {
@@ -41,16 +51,19 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     slug: cleanField(parsedJob.slug),
   };
 
+  const pageTitle = `${cleanedJob.company} - ${cleanedJob.jobTitle}${cleanedJob.location ? ` - ${cleanedJob.location}` : ''}`;
+  const hashtags = generateHashtags(pageTitle);
+
   const generateHtmlTemplate = (job: any, date: string) => `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="${job.metaDescription}">
-    <meta property="og:title" content="${job.jobTitle} - ${job.company}">
+    <meta property="og:title" content="${pageTitle}">
     <meta property="og:description" content="${job.metaDescription}">
     ${job.imageUrl ? `<meta property="og:image" content="${job.imageUrl}">` : ''}
-    <title>${job.jobTitle} - ${job.company}</title>
+    <title>${pageTitle}</title>
     <link rel="stylesheet" href="/post.css">
 </head>
 <body>
@@ -60,7 +73,7 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
         <a href="https://job.web.id/">Jobs</a>
       </nav>
       ${job.imageUrl ? `<img src="${job.imageUrl}" alt="${job.jobTitle}" class="featured-image">` : ''}
-      <h1>${job.jobTitle}</h1>
+      <h1>${pageTitle}</h1>
       <p><strong>Company:</strong> ${job.company}</p>
       <p><strong>Location:</strong> ${job.location}</p>
       <p><strong>Job Type:</strong> ${job.jobType}</p>
@@ -96,6 +109,10 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
         <section>
             <h2>Location Map</h2>
             <p><strong>Location Map:</strong> <div class="mapouter"><div class="gmap_canvas"><iframe loading="lazy" id="gmap_canvas" title="${job.jobTitle}" src="https://maps.google.com/maps?q=${encodeURIComponent(job.location)}&amp;t=&amp;z=18&amp;ie=UTF8&amp;iwloc=&amp;output=embed" width="100%" height="240px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="width: 100%;"></iframe></div></div></p>
+        </section>
+        <section>
+            <h2>Hashtags</h2>
+            <p>${hashtags}</p>
         </section>
         <section>
             <h2>Snippet</h2>
