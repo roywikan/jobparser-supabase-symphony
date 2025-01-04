@@ -20,8 +20,8 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
   const cleanedJob = {
     ...parsedJob,
     pageTitle,
+    jobTitle: pageTitle, // Set job title to match og:title
     imageUrl: cleanField(parsedJob.imageUrl),
-    jobTitle: cleanField(parsedJob.jobTitle),
     company: cleanField(parsedJob.company),
     location: cleanField(parsedJob.location),
     jobType: cleanField(parsedJob.jobType),
@@ -34,6 +34,7 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     slug: pageTitle, // Set slug to match og:title
     jsonLd: {
       ...parsedJob.jsonLd,
+      title: pageTitle, // Set JSON-LD title to match og:title
       description: cleanJsonLdField(parsedJob.jsonLd?.description),
     },
   };
@@ -59,11 +60,28 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
           slug={cleanedJob.slug}
         />
       </div>
-      <Textarea
-        value={htmlContent}
-        onChange={(e) => setHtmlContent(e.target.value)}
-        className="min-h-[300px] font-mono text-sm"
-      />
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Hashtags</label>
+          <Textarea
+            value={hashtags.commaList}
+            onChange={(e) => {
+              const newHashtags = {
+                commaList: e.target.value,
+                hashList: e.target.value.split(', ').join(' '),
+                spaceHashList: e.target.value.split(', ').map(tag => tag.replace('#', '# ')).join(', ')
+              };
+              setHtmlContent(generateHtmlTemplate(cleanedJob, formattedDate, newHashtags));
+            }}
+            className="font-mono text-sm mb-4"
+          />
+        </div>
+        <Textarea
+          value={htmlContent}
+          onChange={(e) => setHtmlContent(e.target.value)}
+          className="min-h-[300px] font-mono text-sm"
+        />
+      </div>
     </Card>
   );
 };

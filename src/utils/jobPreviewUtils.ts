@@ -16,6 +16,7 @@ export const cleanJsonLdField = (field: string) => {
     .replace(/Identified by Google from the original job post/g, '')
     .replace(/Job highlightsIdentified Google from original job post/g, '')
     .replace(/<\/li><li class="LevrW">/g, '\n - ')
+    .replace(/<BR>- /g, '\n - ')
     .trim();
 };
 
@@ -40,7 +41,7 @@ export const generateHashtags = (title: string, maxTags = 7) => {
 
   return {
     commaList: hashtags.join(', '),
-    hashList: hashtags.join(', '),
+    hashList: hashtags.join(' '),
     spaceHashList: hashtags.map(tag => tag.replace('#', '# ')).join(', '),
   };
 };
@@ -111,9 +112,9 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
         </section>
         <section>
             <h2>Hashtags</h2>
-            <p>${hashtags.hashList}</p>
-            <p>${hashtags.commaList}</p>
-            <p>${hashtags.spaceHashList}</p>
+            ${hashtags.hashList}<br>
+            ${hashtags.commaList}<br>
+            ${hashtags.spaceHashList}
         </section>
         <section>
             <h2>Snippet</h2>
@@ -135,6 +136,7 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
     </footer>
     <p><script type="application/ld+json">${JSON.stringify({
       ...job.jsonLd,
+      title: job.pageTitle,
       image: job.imageUrl || undefined
     }, null, 2)}</script></p>
 </body>
