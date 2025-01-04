@@ -134,10 +134,10 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
         <p>Created by <a href="https://job.web.id">Andreas Wikan</a></p>
         <p>&copy; ${new Date().getFullYear()} All rights reserved.</p>
     </footer>
-    <p><script type="application/ld+json">${JSON.stringify({
+    <script type="application/ld+json">${JSON.stringify({
       ...job.jsonLd,
       title: job.pageTitle,
       image: job.imageUrl || undefined
-    }, null, 2)}</script></p>
+    }, null, 2)}</script>
 </body>
 </html>`;
