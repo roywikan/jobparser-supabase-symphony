@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requireAuth?: boolean;
+}
+
+const ProtectedRoute = ({ children, requireAuth = false }: ProtectedRouteProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -12,20 +18,20 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
-      if (!session) {
-        navigate("/auth");
+      if (requireAuth && !session) {
+        navigate("/auth", { state: { from: location } });
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
-      if (!session) {
-        navigate("/auth");
+      if (requireAuth && !session) {
+        navigate("/auth", { state: { from: location } });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, location, requireAuth]);
 
   if (loading) {
     return (
@@ -35,7 +41,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (!session) {
+  if (requireAuth && !session) {
     return null;
   }
 

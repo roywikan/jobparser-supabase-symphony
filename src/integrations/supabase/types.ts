@@ -16,6 +16,7 @@ export type Database = {
           company: string
           created_at: string
           created_by: string | null
+          hashtags: string | null
           id: string
           image_url: string | null
           job_description: string | null
@@ -36,6 +37,7 @@ export type Database = {
           company: string
           created_at?: string
           created_by?: string | null
+          hashtags?: string | null
           id?: string
           image_url?: string | null
           job_description?: string | null
@@ -56,6 +58,7 @@ export type Database = {
           company?: string
           created_at?: string
           created_by?: string | null
+          hashtags?: string | null
           id?: string
           image_url?: string | null
           job_description?: string | null
