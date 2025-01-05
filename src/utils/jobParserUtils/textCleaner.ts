@@ -53,7 +53,8 @@ export const generateHashtags = (title: string, maxTags = 7) => {
 
   return {
     commaList: hashtags.join(', '),
-    hashList: hashtags.map(tag => `#${tag}`).join(' '),
+    hashList: hashtags.map(tag => `#${tag}`).join(', '),
+    plainList: hashtags.join(', '),
     spaceHashList: hashtags.map(tag => `# ${tag}`).join(', '),
   };
 };
@@ -82,6 +83,9 @@ export const cleanUrl = (url: string): string => {
   if (!cleaned.startsWith('http://') && !cleaned.startsWith('https://')) {
     cleaned = 'https://' + cleaned;
   }
+  
+  // Remove query strings
+  cleaned = cleaned.split('?')[0];
   
   // Remove any trailing slashes
   cleaned = cleaned.replace(/\/+$/, '');
