@@ -71,3 +71,20 @@ export const formatListContent = (content: string): string => {
   const listItems = items.map(item => `<li>${item.trim()}</li>`).join('');
   return `<ul>${listItems}</ul>`;
 };
+
+export const cleanUrl = (url: string): string => {
+  if (!url) return '';
+  
+  // Remove any whitespace
+  let cleaned = url.trim();
+  
+  // Ensure URL starts with http:// or https://
+  if (!cleaned.startsWith('http://') && !cleaned.startsWith('https://')) {
+    cleaned = 'https://' + cleaned;
+  }
+  
+  // Remove any trailing slashes
+  cleaned = cleaned.replace(/\/+$/, '');
+  
+  return cleaned;
+};
