@@ -14,9 +14,9 @@ export const cleanJsonLdField = (field: string) => {
   return field
     .replace(/Identified by Google from the original job post/g, '')
     .replace(/Job highlightsIdentified Google from original job post/g, '')
-    .replace(/<\/li><li class="LevrW">/g, '\n - ')
-    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '\n - ')
-    .replace(/<BR>- /g, '\n - ')
+    .replace(/<\/li><li class="LevrW">/g, '\n- ')
+    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '\n- ')
+    .replace(/<BR>- /g, '\n- ')
     .trim();
 };
 
@@ -115,7 +115,7 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
             <h2>Hashtags</h2>
             ${hashtags.hashList}<br>
             ${hashtags.plainList}<br>
-            ${hashtags.spaceHashList}
+            ${hashtags.spaceHashList}<br>
         </section>
         <section>
             <h2>Snippet</h2>

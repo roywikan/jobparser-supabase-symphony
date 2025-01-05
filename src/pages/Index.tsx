@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import JobPostPreview from '@/components/JobPostPreview';
 import ParserConfigGuide from '@/components/ParserConfigGuide';
 import Footer from '@/components/Footer';
+import { generateHashtags } from '@/utils/jobPreviewUtils';
 
 const Index = () => {
   const [htmlInput, setHtmlInput] = useState('');
@@ -62,7 +63,8 @@ const Index = () => {
           slug: parsedJob.slug,
           meta_description: parsedJob.metaDescription,
           json_ld: parsedJob.jsonLd,
-          image_url: parsedJob.imageUrl
+          image_url: parsedJob.imageUrl,
+          hashtags: parsedJob.hashtags
         }]);
         
       if (error) throw error;
@@ -86,6 +88,10 @@ const Index = () => {
       setLoading(false);
     }
   };
+
+  const pageTitle = parsedJob ? 
+    `${parsedJob.company} - ${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}` : '';
+  const hashtags = generateHashtags(pageTitle);
 
   return (
     <div className="container mx-auto p-4 space-y-8">
@@ -202,6 +208,16 @@ const Index = () => {
               </div>
 
               <div>
+                <label className="block text-sm font-medium mb-1">Hashtags</label>
+                <Textarea
+                  value={hashtags.plainList}
+                  onChange={(e) => setParsedJob({...parsedJob, hashtags: e.target.value})}
+                  className="font-mono text-sm"
+                  placeholder="tag1, tag2, tag3"
+                />
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium mb-1">Slug</label>
                 <Input
                   value={parsedJob.slug}
@@ -245,6 +261,7 @@ const Index = () => {
             </div>
           </Card>
         )}
+
       </div>
 
       {parsedJob && <JobPostPreview parsedJob={parsedJob} />}

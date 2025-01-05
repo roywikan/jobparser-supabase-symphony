@@ -31,6 +31,7 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     benefits: parsedJob.benefits?.map(cleanField).filter(Boolean),
     responsibilities: parsedJob.responsibilities?.map(cleanField).filter(Boolean),
     metaDescription: cleanMetaField(parsedJob.metaDescription),
+    applyLink: cleanUrl(parsedJob.applyLink),
     slug: pageTitle, // Set slug to match og:title
     jsonLd: {
       ...parsedJob.jsonLd,
@@ -40,17 +41,6 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
   };
 
   const [htmlContent, setHtmlContent] = useState(generateHtmlTemplate(cleanedJob, formattedDate, hashtags));
-  const [hashtagsList, setHashtagsList] = useState(hashtags.plainList);
-
-  const handleHashtagsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newHashtags = {
-      plainList: e.target.value,
-      hashList: e.target.value.split(', ').map(tag => `#${tag}`).join(', '),
-      spaceHashList: e.target.value.split(', ').map(tag => `# ${tag}`).join(', ')
-    };
-    setHashtagsList(e.target.value);
-    setHtmlContent(generateHtmlTemplate(cleanedJob, formattedDate, newHashtags));
-  };
 
   const handleCopy = async () => {
     try {
@@ -72,15 +62,6 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
         />
       </div>
       <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Hashtags (comma-separated, without #)</label>
-          <Textarea
-            value={hashtagsList}
-            onChange={handleHashtagsChange}
-            className="font-mono text-sm mb-4"
-            placeholder="tag1, tag2, tag3"
-          />
-        </div>
         <Textarea
           value={htmlContent}
           onChange={(e) => setHtmlContent(e.target.value)}

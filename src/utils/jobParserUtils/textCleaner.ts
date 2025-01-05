@@ -7,6 +7,9 @@ export const cleanMetaDescription = (text: string): string => {
     .replace(/<\/li><li class="LevrW">/g, ' - ')
     .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, ' - ');
     
+  // Add space after punctuation marks
+  cleaned = cleaned.replace(/([.!?])([A-Z])/g, '$1 $2');
+  
   // Remove symbols and non-ASCII characters
   cleaned = cleaned.replace(/[^\x00-\x7F]/g, '');
   
@@ -36,9 +39,9 @@ export const cleanJsonLdField = (field: string) => {
   return field
     .replace(/Identified by Google from the original job post/g, '')
     .replace(/Job highlightsIdentified Google from original job post/g, '')
-    .replace(/<\/li><li class="LevrW">/g, '\n - ')
-    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '\n - ')
-    .replace(/<BR>- /g, '\n - ')
+    .replace(/<\/li><li class="LevrW">/g, '\n- ')
+    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '\n- ')
+    .replace(/<BR>- /g, '\n- ')
     .trim();
 };
 
@@ -57,20 +60,6 @@ export const generateHashtags = (title: string, maxTags = 7) => {
     plainList: hashtags.join(', '),
     spaceHashList: hashtags.map(tag => `# ${tag}`).join(', '),
   };
-};
-
-export const formatListContent = (content: string): string => {
-  if (!content) return '';
-  
-  let cleaned = content
-    .replace(/Identified by Google from the original job post/g, '')
-    .replace(/Job highlightsIdentified Google from original job post/g, '');
-  
-  const items = cleaned.split(/<\/li><li class="LevrW">|<\/li><li jsname="wsRnQ" style="" class="LevrW">/).filter(Boolean);
-  if (items.length <= 1) return cleaned;
-  
-  const listItems = items.map(item => `<li>${item.trim()}</li>`).join('');
-  return `<ul>${listItems}</ul>`;
 };
 
 export const cleanUrl = (url: string): string => {
