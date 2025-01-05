@@ -53,7 +53,7 @@ const Index = () => {
       const { error } = await supabase
         .from('job_posts')
         .insert([{
-          job_title: pageTitle, // Use pageTitle for consistency
+          job_title: pageTitle,
           company: parsedJob.company,
           location: parsedJob.location,
           job_type: parsedJob.jobType,
@@ -63,14 +63,14 @@ const Index = () => {
           responsibilities: parsedJob.responsibilities,
           job_description: parsedJob.description,
           application_link: parsedJob.applyLink,
-          slug: parsedJob.slug,
+          slug: pageTitle, // Use same source as job_title
           meta_description: parsedJob.metaDescription,
           json_ld: {
             ...parsedJob.jsonLd,
-            title: pageTitle, // Use pageTitle for consistency
+            title: pageTitle, // Use same source as job_title
           },
           image_url: parsedJob.imageUrl,
-          hashtags: parsedJob.hashtags || hashtags.plainList // Use provided hashtags or generate new ones
+          hashtags: parsedJob.hashtags || hashtags.plainList
         }]);
         
       if (error) throw error;
@@ -80,7 +80,6 @@ const Index = () => {
         description: "Successfully saved to database",
       });
       
-      // Reset form
       setHtmlInput('');
       setParsedJob(null);
     } catch (error) {
@@ -216,7 +215,7 @@ const Index = () => {
               <div>
                 <label className="block text-sm font-medium mb-1">Hashtags</label>
                 <Textarea
-                  value={hashtags.plainList}
+                  value={parsedJob.hashtags || hashtags.plainList}
                   onChange={(e) => setParsedJob({...parsedJob, hashtags: e.target.value})}
                   className="font-mono text-sm"
                   placeholder="tag1, tag2, tag3"
