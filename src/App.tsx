@@ -20,7 +20,7 @@ const App = () => (
           <Route
             path="/"
             element={
-              <ProtectedRoute requireAuth={false}>
+              <ProtectedRoute requireAuth={true}>
                 <Index />
               </ProtectedRoute>
             }

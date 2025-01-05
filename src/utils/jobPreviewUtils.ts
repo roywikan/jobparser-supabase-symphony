@@ -3,10 +3,9 @@ export const cleanField = (field: string) => {
   return field
     .replace(/Identified by Google from the original job post/g, '')
     .replace(/Job highlightsIdentified Google from original job post/g, '')
-    .replace(/<br>/g, ' ')
-    .replace(/(?:• )+/g, '<BR>- ')
-    .replace(/([.!?])([A-Z])/g, '$1 $2')
     .replace(/<\/li><li class="LevrW">/g, '<BR>- ')
+    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '<BR>- ')
+    .replace(/([.!?])([A-Z])/g, '$1 $2')
     .trim();
 };
 
@@ -16,6 +15,7 @@ export const cleanJsonLdField = (field: string) => {
     .replace(/Identified by Google from the original job post/g, '')
     .replace(/Job highlightsIdentified Google from original job post/g, '')
     .replace(/<\/li><li class="LevrW">/g, '\n - ')
+    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '\n - ')
     .replace(/<BR>- /g, '\n - ')
     .trim();
 };
@@ -26,6 +26,7 @@ export const cleanMetaField = (field: string) => {
     .replace(/Identified by Google from the original job post/g, '')
     .replace(/Job highlightsIdentified Google from original job post/g, '')
     .replace(/<\/li><li class="LevrW">/g, ' - ')
+    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, ' - ')
     .trim();
 };
 
@@ -33,16 +34,16 @@ export const generateHashtags = (title: string, maxTags = 7) => {
   const hashtags = title
     .toLowerCase()
     .split(/[\s-]+/)
-    .filter(word => word.length > 2)
+    .filter(word => word.length > 2 && word.trim())
     .map(word => word.trim())
     .filter(Boolean)
-    .slice(0, maxTags)
-    .map(word => `#${word}`);
+    .slice(0, maxTags);
 
   return {
     commaList: hashtags.join(', '),
-    hashList: hashtags.join(' '),
-    spaceHashList: hashtags.map(tag => tag.replace('#', '# ')).join(', '),
+    hashList: hashtags.map(tag => `#${tag}`).join(', '),
+    plainList: hashtags.join(', '),
+    spaceHashList: hashtags.map(tag => `# ${tag}`).join(', '),
   };
 };
 
@@ -113,13 +114,13 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
         <section>
             <h2>Hashtags</h2>
             ${hashtags.hashList}<br>
-            ${hashtags.commaList}<br>
+            ${hashtags.plainList}<br>
             ${hashtags.spaceHashList}
         </section>
         <section>
             <h2>Snippet</h2>
             <blockquote>
-                ${job.metaDescription} ${hashtags.hashList}
+                ${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}
             </blockquote>
         </section>
         <section>
