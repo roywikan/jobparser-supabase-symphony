@@ -47,10 +47,13 @@ const Index = () => {
     
     setLoading(true);
     try {
+      const pageTitle = `${parsedJob.company} - ${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}`;
+      const hashtags = generateHashtags(pageTitle);
+
       const { error } = await supabase
         .from('job_posts')
         .insert([{
-          job_title: parsedJob.jobTitle,
+          job_title: pageTitle, // Use pageTitle for consistency
           company: parsedJob.company,
           location: parsedJob.location,
           job_type: parsedJob.jobType,
@@ -62,9 +65,12 @@ const Index = () => {
           application_link: parsedJob.applyLink,
           slug: parsedJob.slug,
           meta_description: parsedJob.metaDescription,
-          json_ld: parsedJob.jsonLd,
+          json_ld: {
+            ...parsedJob.jsonLd,
+            title: pageTitle, // Use pageTitle for consistency
+          },
           image_url: parsedJob.imageUrl,
-          hashtags: parsedJob.hashtags
+          hashtags: parsedJob.hashtags || hashtags.plainList // Use provided hashtags or generate new ones
         }]);
         
       if (error) throw error;
