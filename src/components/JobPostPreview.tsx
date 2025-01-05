@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import PreviewControls from "./PreviewControls";
 import { cleanField, cleanJsonLdField, cleanMetaField, generateHashtags, generateHtmlTemplate } from "@/utils/jobPreviewUtils";
+import { cleanUrl } from "@/utils/jobParserUtils/textCleaner";
 
 interface JobPostPreviewProps {
   parsedJob: any;

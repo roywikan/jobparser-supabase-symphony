@@ -23,45 +23,6 @@ export const cleanMetaDescription = (text: string): string => {
   return cleaned.split(' ').slice(0, 20).join(' ').trim();
 };
 
-export const cleanField = (field: string) => {
-  if (!field) return '';
-  return field
-    .replace(/Identified by Google from the original job post/g, '')
-    .replace(/Job highlightsIdentified Google from original job post/g, '')
-    .replace(/<\/li><li class="LevrW">/g, '<BR>- ')
-    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '<BR>- ')
-    .replace(/([.!?])([A-Z])/g, '$1 $2')
-    .trim();
-};
-
-export const cleanJsonLdField = (field: string) => {
-  if (!field) return '';
-  return field
-    .replace(/Identified by Google from the original job post/g, '')
-    .replace(/Job highlightsIdentified Google from original job post/g, '')
-    .replace(/<\/li><li class="LevrW">/g, '\n- ')
-    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '\n- ')
-    .replace(/<BR>- /g, '\n- ')
-    .trim();
-};
-
-export const generateHashtags = (title: string, maxTags = 7) => {
-  const hashtags = title
-    .toLowerCase()
-    .split(/[\s-]+/)
-    .filter(word => word.length > 2 && word.trim())
-    .map(word => word.trim())
-    .filter(Boolean)
-    .slice(0, maxTags);
-
-  return {
-    commaList: hashtags.join(', '),
-    hashList: hashtags.map(tag => `#${tag}`).join(', '),
-    plainList: hashtags.join(', '),
-    spaceHashList: hashtags.map(tag => `# ${tag}`).join(', '),
-  };
-};
-
 export const cleanUrl = (url: string): string => {
   if (!url) return '';
   
@@ -80,4 +41,15 @@ export const cleanUrl = (url: string): string => {
   cleaned = cleaned.replace(/\/+$/, '');
   
   return cleaned;
+};
+
+export const formatListContent = (content: string): string => {
+  if (!content) return '';
+  
+  return content
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between joined words
+    .replace(/<\/li><li class="LevrW">/g, '<BR>- ')
+    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '<BR>- ')
+    .replace(/([.!?])([A-Z])/g, '$1 $2')
+    .trim();
 };
