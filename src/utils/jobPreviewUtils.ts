@@ -125,9 +125,7 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
         </section>
         <section>
             <h2>Slug</h2>
-            <textarea>
-                ${job.slug}
-            </textarea>
+            <textarea>${job.slug}</textarea>
         </section>
     </main>
     <footer>
