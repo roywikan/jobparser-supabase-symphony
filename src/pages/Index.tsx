@@ -28,7 +28,9 @@ const Index = () => {
     try {
       const jobDetails = parseJobDetails(htmlInput);
       // Format the job title to match pageTitle format
-      const formattedTitle = `${jobDetails.company} - ${jobDetails.jobTitle}${jobDetails.location ? ` - ${jobDetails.location}` : ''}`;
+      //const formattedTitle = `${jobDetails.company} - ${jobDetails.jobTitle}${jobDetails.location ? ` - ${jobDetails.location}` : ''}`;
+      const formattedTitle = `${parsedJob.company} - ${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}`;
+
 
       //setParsedJob({jobDetails, jobTitle: formattedTitle });
       setParsedJob({
