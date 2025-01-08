@@ -30,7 +30,12 @@ const Index = () => {
       // Format the job title to match pageTitle format
       const formattedTitle = `${jobDetails.company} - ${jobDetails.jobTitle}${jobDetails.location ? ` - ${jobDetails.location}` : ''}`;
 
-      setParsedJob({jobDetails, jobTitle: formattedTitle });
+      //setParsedJob({jobDetails, jobTitle: formattedTitle });
+      setParsedJob({
+  ...jobDetails,
+  jobTitle: formattedTitle // Set the formatted title
+});
+      
       toast({
         title: "Successfully parsed job details",
         description: "You can now review and edit the parsed information.",
