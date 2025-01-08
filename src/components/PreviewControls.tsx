@@ -3,6 +3,8 @@ import { Copy, Github } from "lucide-react";
 import { toast } from "sonner";
 import { sendToGithub } from "@/utils/githubUtils";
 import { supabase } from "@/integrations/supabase/client";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 interface PreviewControlsProps {
   onCopy: () => Promise<void>;
@@ -11,6 +13,8 @@ interface PreviewControlsProps {
 }
 
 const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) => {
+  const [repository, setRepository] = useState("roywikan/job-uk");
+
   const handleSendToGithub = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     
@@ -19,8 +23,14 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
       return;
     }
 
+    // Validate repository format
+    if (!repository.match(/^[a-zA-Z0-9-]+\/[a-zA-Z0-9-_\.]+$/)) {
+      toast.error("Invalid repository format. Please use format: username/repository");
+      return;
+    }
+
     try {
-      const result = await sendToGithub(htmlContent, slug);
+      const result = await sendToGithub(htmlContent, slug, repository);
       if (result.success) {
         toast.success("Successfully sent to GitHub repository!");
       } else {
@@ -33,25 +43,37 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
   };
 
   return (
-    <div className="flex gap-2">
-      <Button 
-        onClick={onCopy}
-        variant="outline"
-        size="sm"
-        className="flex items-center gap-2"
-      >
-        <Copy className="h-4 w-4" />
-        Copy HTML
-      </Button>
-      <Button
-        onClick={handleSendToGithub}
-        variant="outline"
-        size="sm"
-        className="flex items-center gap-2"
-      >
-        <Github className="h-4 w-4" />
-        Send to GitHub
-      </Button>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <Button 
+          onClick={onCopy}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          <Copy className="h-4 w-4" />
+          Copy HTML
+        </Button>
+        <Button
+          onClick={handleSendToGithub}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          <Github className="h-4 w-4" />
+          Send to GitHub
+        </Button>
+      </div>
+      <div className="flex items-center gap-2">
+        <label htmlFor="repository" className="text-sm whitespace-nowrap">Target Repository:</label>
+        <Input
+          id="repository"
+          value={repository}
+          onChange={(e) => setRepository(e.target.value)}
+          placeholder="username/repository"
+          className="max-w-xs"
+        />
+      </div>
     </div>
   );
 };
