@@ -50,9 +50,15 @@ serve(async (req) => {
     const indexHtml = generateIndexHtml(jobs);
     await commitFile(repo, 'index.html', indexHtml, branch);
 
-    // Generate and commit index.css
-    const indexCss = generateIndexCss();
-    await commitFile(repo, 'index.css', indexCss, branch);
+    // Only generate and commit index.css if it's a new job post (not regenerating)
+    // or if index.css doesn't exist yet
+    if (!regenerateIndex) {
+      const cssExists = files.some(file => file.name === 'index.css');
+      if (!cssExists) {
+        const indexCss = generateIndexCss();
+        await commitFile(repo, 'index.css', indexCss, branch);
+      }
+    }
 
     return new Response(
       JSON.stringify({ success: true, message: 'Files updated successfully' }),
