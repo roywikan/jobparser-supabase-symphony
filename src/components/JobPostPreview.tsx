@@ -16,7 +16,9 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
   const formattedDate = new Date().toISOString();
   
   // Ensure consistent title across all fields
-  const pageTitle = `${parsedJob.company} - ${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}`;
+  //const pageTitle = `${parsedJob.company} - ${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}`;
+  const pageTitle = `${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}`;
+
   const hashtags = generateHashtags(pageTitle);
 
   const cleanedJob = {
