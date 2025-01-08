@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Copy, Github } from "lucide-react";
+import { Copy, Github, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { sendToGithub } from "@/utils/githubUtils";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,6 +42,27 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
     }
   };
 
+  const handleRegenerateIndex = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast.error("Please sign in to regenerate index");
+      return;
+    }
+
+    try {
+      const result = await sendToGithub('', '', repository, true);
+      if (result.success) {
+        toast.success("Successfully regenerated index files!");
+      } else {
+        toast.error("Failed to regenerate index files");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Failed to regenerate index files");
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
@@ -62,6 +83,15 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
         >
           <Github className="h-4 w-4" />
           Send to GitHub
+        </Button>
+        <Button
+          onClick={handleRegenerateIndex}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className="h-4 w-4" />
+          Regenerate Index
         </Button>
       </div>
       <div className="flex items-center gap-2">
