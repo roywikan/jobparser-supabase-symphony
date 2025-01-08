@@ -27,7 +27,10 @@ const Index = () => {
   const handleParse = () => {
     try {
       const jobDetails = parseJobDetails(htmlInput);
-      setParsedJob(jobDetails);
+      // Format the job title to match pageTitle format
+      const formattedTitle = `${jobDetails.company} - ${jobDetails.jobTitle}${jobDetails.location ? ` - ${jobDetails.location}` : ''}`;
+
+      setParsedJob({jobDetails, jobTitle: formattedTitle });
       toast({
         title: "Successfully parsed job details",
         description: "You can now review and edit the parsed information.",
