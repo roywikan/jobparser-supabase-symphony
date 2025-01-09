@@ -41,6 +41,17 @@ export const generateIndexHtml = (jobs) => {
     <div class="pagination">
         ${pagination}
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; ${new Date().getFullYear()} 
+                <a href="https://${jobs[0]?.customDomain || 'uk.job.web.id'}" class="footer-link">
+                    ${jobs[0]?.customDomain || 'uk.job.web.id'}
+                </a>
+                | <a href="https://job.web.id" class="footer-link">Main Site</a>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>`;
 }
@@ -175,4 +186,29 @@ h1 {
     background: #2563eb;
     color: white;
 }
-`;
+
+/* Footer Styles */
+.site-footer {
+    background: #f8fafc;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.footer-link {
+    color: #2563eb;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+`; 
