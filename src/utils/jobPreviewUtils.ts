@@ -127,11 +127,46 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
             <blockquote>
                 ${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}
             </blockquote>
+ 
+                <div class="social-share">
+                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20via%20@jobwebid" 
+                       target="_blank" rel="noopener noreferrer">Share on X (Twitter)</a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}" 
+                       target="_blank" rel="noopener noreferrer">Share on Facebook</a>
+                    <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20${encodeURIComponent(window.location.href)}" 
+                       target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(job.pageTitle)}&summary=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20via%20jobwebid" 
+                       target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
+                </div>
+                <style>
+                    .social-share {
+                        display: flex;
+                        gap: 1rem;
+                        margin-top: 1rem;
+                    }
+                    .social-share a {
+                        display: inline-block;
+                        padding: 0.5rem 1rem;
+                        background: #f3f4f6;
+                        border-radius: 0.375rem;
+                        text-decoration: none;
+                        color: #374151;
+                        font-size: 0.875rem;
+                        transition: background-color 0.2s;
+                    }
+                    .social-share a:hover {
+                        background: #e5e7eb;
+                    }
+                </style>
         </section>
+
+
+
         <section>
             <h2>Slug</h2>
             
-            <textarea>${job.slug.trim()}</textarea>
+            <textarea style="width: 90%; box-sizing: border-box;">${job.slug.trim()}</textarea>
+            
         </section>
     </main>
     <footer>
