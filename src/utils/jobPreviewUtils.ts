@@ -33,7 +33,11 @@ export const cleanMetaField = (field: string) => {
 export const generateHashtags = (title: string, maxTags = 7) => {
   const hashtags = title
     .toLowerCase()
+    // Ganti semua karakter khusus kecuali - dengan spasi
+    .replace(/[^a-z0-9\-\s]/g, ' ')
+    // Pisahkan berdasarkan spasi atau -
     .split(/[\s-]+/)
+    // Filter kata yang terlalu pendek dan hapus whitespace
     .filter(word => word.length > 2 && word.trim())
     .map(word => word.trim())
     .filter(Boolean)
@@ -46,6 +50,7 @@ export const generateHashtags = (title: string, maxTags = 7) => {
     spaceHashList: hashtags.map(tag => `# ${tag}`).join(', '),
   };
 };
+
 
 export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `<!DOCTYPE html>
 <html lang="en">
