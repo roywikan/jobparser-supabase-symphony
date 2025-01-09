@@ -13,7 +13,14 @@ interface PreviewControlsProps {
 }
 
 const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) => {
-  const [repository, setRepository] = useState("roywikan/job-uk");
+  const [customDomain, setCustomDomain] = useState("");
+  const [customRepo, setCustomRepo] = useState("");
+  
+  // Internal function to get the effective domain
+  const getEffectiveDomain = () => customDomain || "uk.job.web.id";
+  
+  // Internal function to get the effective repository
+  const getEffectiveRepo = () => customRepo || "roywikan/job-uk";
 
   const handleSendToGithub = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -23,14 +30,16 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
       return;
     }
 
-    // Validate repository format
-    if (!repository.match(/^[a-zA-Z0-9-]+\/[a-zA-Z0-9-_\.]+$/)) {
+    const effectiveRepo = getEffectiveRepo();
+    
+    // Validate repository format if custom repo is provided
+    if (customRepo && !customRepo.match(/^[a-zA-Z0-9-]+\/[a-zA-Z0-9-_\.]+$/)) {
       toast.error("Invalid repository format. Please use format: username/repository");
       return;
     }
 
     try {
-      const result = await sendToGithub(htmlContent, slug, repository);
+      const result = await sendToGithub(htmlContent, slug, effectiveRepo);
       if (result.success) {
         toast.success("Successfully sent to GitHub repository!");
       } else {
@@ -51,7 +60,7 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
     }
 
     try {
-      const result = await sendToGithub('', '', repository, true);
+      const result = await sendToGithub('', '', getEffectiveRepo(), true);
       if (result.success) {
         toast.success("Successfully regenerated index files!");
       } else {
@@ -95,12 +104,22 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
         </Button>
       </div>
       <div className="flex items-center gap-2">
-        <label htmlFor="repository" className="text-sm whitespace-nowrap">Target Repository:</label>
+        <label htmlFor="customDomain" className="text-sm whitespace-nowrap">Custom Domain:</label>
         <Input
-          id="repository"
-          value={repository}
-          onChange={(e) => setRepository(e.target.value)}
-          placeholder="username/repository"
+          id="customDomain"
+          value={customDomain}
+          onChange={(e) => setCustomDomain(e.target.value)}
+          placeholder="Leave empty for default"
+          className="max-w-xs"
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <label htmlFor="customRepo" className="text-sm whitespace-nowrap">Custom Repository:</label>
+        <Input
+          id="customRepo"
+          value={customRepo}
+          onChange={(e) => setCustomRepo(e.target.value)}
+          placeholder="Leave empty for default"
           className="max-w-xs"
         />
       </div>

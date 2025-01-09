@@ -51,7 +51,6 @@ export const generateHashtags = (title: string, maxTags = 7) => {
   };
 };
 
-
 export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -123,23 +122,28 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
             ${hashtags.spaceHashList}<br>
         </section>
 
-        
-
-    
         <section>
             <h2>Snippet</h2>
             <blockquote>
                 ${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}
             </blockquote>
                 <div class="social-share">
-                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20via%20@jobwebid&url=${encodeURIComponent(window.location.href)}" 
-                       target="_blank" rel="noopener noreferrer">Share on X (Twitter)</a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}" 
-                       target="_blank" rel="noopener noreferrer">Share on Facebook</a>
-                    <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20${encodeURIComponent(window.location.href)}" 
-                       target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
-                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(job.pageTitle)}&summary=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20via%20jobwebid" 
-                       target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
+                    <script>
+                        // Get the current domain, defaulting to uk.job.web.id if not set
+                        const domain = document.querySelector('meta[name="job-domain"]')?.getAttribute('content') || 'uk.job.web.id';
+                        const postUrl = \`https://\${domain}/${job.slug}.html\`;
+                        
+                        document.write(\`
+                            <a href="https://twitter.com/intent/tweet?text=\${encodeURIComponent(\`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}\`)}%20via%20@jobwebid&url=\${encodeURIComponent(postUrl)}" 
+                               target="_blank" rel="noopener noreferrer">Share on X (Twitter)</a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=\${encodeURIComponent(postUrl)}&quote=\${encodeURIComponent(\`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}\`)}" 
+                               target="_blank" rel="noopener noreferrer">Share on Facebook</a>
+                            <a href="https://api.whatsapp.com/send?text=\${encodeURIComponent(\`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}\`)}%20\${encodeURIComponent(postUrl)}" 
+                               target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=\${encodeURIComponent(postUrl)}&title=\${encodeURIComponent(job.pageTitle)}&summary=\${encodeURIComponent(\`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}\`)}%20via%20jobwebid" 
+                               target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
+                        \`);
+                    </script>
                 </div>
                 <style>
                     .social-share {
@@ -163,14 +167,9 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
                 </style>
         </section>
 
-    
-
-
         <section>
             <h2>Slug</h2>
-            
-            <textarea style="width: 90%; box-sizing: border-box;">${job.slug.trim()}</textarea>
-            
+            <textarea style="width: 100%; box-sizing: border-box;">${job.slug.trim()}</textarea>
         </section>
     </main>
     <footer>
