@@ -122,14 +122,17 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
             ${hashtags.plainList}<br>
             ${hashtags.spaceHashList}<br>
         </section>
+
+        
+
+    
         <section>
             <h2>Snippet</h2>
             <blockquote>
                 ${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}
             </blockquote>
- 
                 <div class="social-share">
-                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20via%20@jobwebid" 
+                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20via%20@jobwebid&url=${encodeURIComponent(window.location.href)}" 
                        target="_blank" rel="noopener noreferrer">Share on X (Twitter)</a>
                     <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}" 
                        target="_blank" rel="noopener noreferrer">Share on Facebook</a>
@@ -160,6 +163,7 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
                 </style>
         </section>
 
+    
 
 
         <section>
