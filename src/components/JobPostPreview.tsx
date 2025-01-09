@@ -6,6 +6,13 @@ import PreviewControls from "./PreviewControls";
 import { cleanField, cleanJsonLdField, cleanMetaField, generateHashtags, generateHtmlTemplate } from "@/utils/jobPreviewUtils";
 import { cleanUrl } from "@/utils/jobParserUtils/textCleaner";
 
+const removeDuplicatePhrases = (title: string): string => {
+  if (!title) return '';
+  const parts = title.split('-').map(part => part.trim());
+  const uniqueParts = parts.filter((part, index) => parts.indexOf(part) === index);
+  return uniqueParts.join(' - ');
+};
+
 interface JobPostPreviewProps {
   parsedJob: any;
 }
@@ -16,9 +23,8 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
   const formattedDate = new Date().toISOString();
   
   // Ensure consistent title across all fields
-  //const rawTitle = `${parsedJob.company} - ${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}`;
-const pageTitle = removeDuplicatePhrases(rawTitle);
-  const pageTitle = `${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}`;
+  const rawTitle = `${parsedJob.company} - ${parsedJob.jobTitle}${parsedJob.location ? ` - ${parsedJob.location}` : ''}`;
+  const pageTitle = removeDuplicatePhrases(rawTitle);
 
   const hashtags = generateHashtags(pageTitle);
 
