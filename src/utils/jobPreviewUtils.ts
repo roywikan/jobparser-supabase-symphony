@@ -127,44 +127,36 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
             <blockquote>
                 ${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}
             </blockquote>
-                <div class="social-share">
-                    <script>
-                        // Get the current domain, defaulting to uk.job.web.id if not set
-                        const domain = document.querySelector('meta[name="job-domain"]')?.getAttribute('content') || 'uk.job.web.id';
-                        const postUrl = \`https://\${domain}/${job.slug}.html\`;
-                        
-                        document.write(\`
-                            <a href="https://twitter.com/intent/tweet?text=\${encodeURIComponent(\`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}\`)}%20via%20@jobwebid&url=\${encodeURIComponent(postUrl)}" 
-                               target="_blank" rel="noopener noreferrer">Share on X (Twitter)</a>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=\${encodeURIComponent(postUrl)}&quote=\${encodeURIComponent(\`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}\`)}" 
-                               target="_blank" rel="noopener noreferrer">Share on Facebook</a>
-                            <a href="https://api.whatsapp.com/send?text=\${encodeURIComponent(\`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}\`)}%20\${encodeURIComponent(postUrl)}" 
-                               target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
-                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=\${encodeURIComponent(postUrl)}&title=\${encodeURIComponent(job.pageTitle)}&summary=\${encodeURIComponent(\`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}\`)}%20via%20jobwebid" 
-                               target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
-                        \`);
-                    </script>
-                </div>
-                <style>
-                    .social-share {
-                        display: flex;
-                        gap: 1rem;
-                        margin-top: 1rem;
-                    }
-                    .social-share a {
-                        display: inline-block;
-                        padding: 0.5rem 1rem;
-                        background: #f3f4f6;
-                        border-radius: 0.375rem;
-                        text-decoration: none;
-                        color: #374151;
-                        font-size: 0.875rem;
-                        transition: background-color 0.2s;
-                    }
-                    .social-share a:hover {
-                        background: #e5e7eb;
-                    }
-                </style>
+            <div class="social-share">
+                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20via%20@jobwebid&url=https://${job.customDomain || 'uk.job.web.id'}/${job.slug}.html" 
+                   target="_blank" rel="noopener noreferrer">Share on X (Twitter)</a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://${job.customDomain || 'uk.job.web.id'}/${job.slug}.html&quote=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}" 
+                   target="_blank" rel="noopener noreferrer">Share on Facebook</a>
+                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20https://${job.customDomain || 'uk.job.web.id'}/${job.slug}.html" 
+                   target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://${job.customDomain || 'uk.job.web.id'}/${job.slug}.html&title=${encodeURIComponent(job.pageTitle)}&summary=${encodeURIComponent(`${job.metaDescription} ${hashtags.hashList.replace(/,/g, '')}`)}%20via%20jobwebid" 
+                   target="_blank" rel="noopener noreferrer">Share on LinkedIn</a>
+            </div>
+            <style>
+                .social-share {
+                    display: flex;
+                    gap: 1rem;
+                    margin-top: 1rem;
+                }
+                .social-share a {
+                    display: inline-block;
+                    padding: 0.5rem 1rem;
+                    background: #f3f4f6;
+                    border-radius: 0.375rem;
+                    text-decoration: none;
+                    color: #374151;
+                    font-size: 0.875rem;
+                    transition: background-color 0.2s;
+                }
+                .social-share a:hover {
+                    background: #e5e7eb;
+                }
+            </style>
         </section>
 
         <section>
