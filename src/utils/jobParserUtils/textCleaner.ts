@@ -46,7 +46,7 @@ export const cleanUrl = (url: string): string => {
 //const customCountry = 'United Kingdom'; 
 // Default value for customCountry "Edit Github repo file:  /src/components/PreviewControls.tsx"
 
-export const NewcleanLocation = (location: string): string => {
+export const cleanLocation = (location: string, customCountry: string): string => {
   // Check if location is empty
   if (!location) return customCountry;
 
@@ -72,7 +72,7 @@ export const NewcleanLocation = (location: string): string => {
   return location.trim();
 };
 
-export const cleanLocation = (location: string): string => {
+export const OLDcleanLocation = (location: string): string => {
   if (!location) return '';
   
   // If location is "Remote", return it as is
