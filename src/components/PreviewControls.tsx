@@ -15,6 +15,7 @@ interface PreviewControlsProps {
 const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) => {
   const [customDomain, setCustomDomain] = useState("");
   const [customRepo, setCustomRepo] = useState("");
+  const [customCountry, setCustomCountry] = useState("United Kingdom");
   
   // Internal function to get the effective domain
   const getEffectiveDomain = () => customDomain || "uk.job.web.id";
@@ -120,6 +121,16 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
           value={customRepo}
           onChange={(e) => setCustomRepo(e.target.value)}
           placeholder="Leave empty for default"
+          className="max-w-xs"
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <label htmlFor="customCountry" className="text-sm whitespace-nowrap">Custom Country:</label>
+        <Input
+          id="customCountry"
+          value={customCountry}
+          onChange={(e) => setCustomCountry(e.target.value)}
+          placeholder="United Kingdom"
           className="max-w-xs"
         />
       </div>

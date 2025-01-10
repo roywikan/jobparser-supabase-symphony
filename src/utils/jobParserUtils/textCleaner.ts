@@ -43,6 +43,23 @@ export const cleanUrl = (url: string): string => {
   return cleaned;
 };
 
+export const cleanLocation = (location: string): string => {
+  if (!location) return '';
+  
+  // If location is "Remote", return it as is
+  if (location.toLowerCase() === 'remote') {
+    return 'Remote';
+  }
+  
+  // Remove everything after "via" (case insensitive)
+  const viaIndex = location.toLowerCase().indexOf('via');
+  if (viaIndex !== -1) {
+    return location.substring(0, viaIndex).trim();
+  }
+  
+  return location.trim();
+};
+
 export const formatListContent = (content: string): string => {
   if (!content) return '';
   

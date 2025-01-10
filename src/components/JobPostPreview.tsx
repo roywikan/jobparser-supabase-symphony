@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import PreviewControls from "./PreviewControls";
 import { cleanField, cleanJsonLdField, cleanMetaField, generateHashtags, generateHtmlTemplate } from "@/utils/jobPreviewUtils";
-import { cleanUrl } from "@/utils/jobParserUtils/textCleaner";
+import { cleanUrl, cleanLocation } from "@/utils/jobParserUtils/textCleaner";
 
 const removeDuplicatePhrases = (title: string): string => {
   if (!title) return '';
@@ -34,7 +34,7 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     jobTitle: pageTitle, // Set job title to match og:title
     imageUrl: cleanField(parsedJob.imageUrl),
     company: cleanField(parsedJob.company),
-    location: cleanField(parsedJob.location),
+    location: cleanLocation(parsedJob.location), // Use new cleanLocation function
     jobType: cleanField(parsedJob.jobType),
     salary: cleanField(parsedJob.salary),
     description: cleanField(parsedJob.description),
