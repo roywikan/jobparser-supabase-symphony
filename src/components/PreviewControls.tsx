@@ -44,7 +44,7 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
       if (result.success) {
         toast.success("Successfully sent to GitHub repository!");
       } else {
-        toast.error("Failed to send to GitHub repository");
+        toast.error(`Failed to send to GitHub repository: ${result.error}`);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -65,7 +65,7 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
       if (result.success) {
         toast.success("Successfully regenerated index files!");
       } else {
-        toast.error("Failed to regenerate index files");
+        toast.error(`Failed to regenerate index files: ${result.error}`);
       }
     } catch (error) {
       console.error('Error:', error);

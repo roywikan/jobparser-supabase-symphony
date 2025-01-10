@@ -43,10 +43,10 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     responsibilities: parsedJob.responsibilities?.map(cleanField).filter(Boolean),
     metaDescription: cleanMetaField(parsedJob.metaDescription),
     applyLink: cleanUrl(parsedJob.applyLink),
-    slug: parsedJob.slug, // Set slug to Parsed Results slug
+    slug: parsedJob.slug,
     jsonLd: {
       ...parsedJob.jsonLd,
-      title: pageTitle, // Set JSON-LD title to match og:title
+      title: pageTitle,
       description: cleanJsonLdField(parsedJob.jsonLd?.description),
     },
   };

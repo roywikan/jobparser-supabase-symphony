@@ -64,7 +64,7 @@ export const formatListContent = (content: string): string => {
   if (!content) return '';
   
   return content
-    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between joined words
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/Job highlights Identified by Google from the original job post/g, '')
     .replace(/Identified by Google from the original job post/g, '')
     .replace(/<h4 class="yVFmQd cS4Vcb-pGL6qe-KUvarc">/g, '<br><br>')
