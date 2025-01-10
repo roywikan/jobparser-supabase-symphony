@@ -52,9 +52,14 @@ export const cleanLocation = (location: string): string => {
   }
   
   // Remove everything after "via" (case insensitive)
-  const viaIndex = location.toLowerCase().indexOf('via');
+  const viaIndex = location.toLowerCase().indexOf(' via ');
   if (viaIndex !== -1) {
     return location.substring(0, viaIndex).trim();
+  }
+  
+  // Also check for just "via" at the start
+  if (location.toLowerCase().startsWith('via ')) {
+    return '';
   }
   
   return location.trim();
