@@ -111,11 +111,11 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
           htmlFor="defaultValuesInfo"
           className="text-sm whitespace-nowrap"
         >
-          How to change default values?
+          Change default values?
         </label>
         <Input
           id="defaultValuesInfo"
-          placeholder="Edit Github repo file: /src/components/PreviewControls.tsx"
+          placeholder="Edit: /src/components/PreviewControls.tsx"
           className="max-w-xs"
           readOnly // Marked as read-only to clarify its purpose
         />
