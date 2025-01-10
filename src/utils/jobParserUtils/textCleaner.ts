@@ -43,10 +43,15 @@ export const cleanUrl = (url: string): string => {
   return cleaned;
 };
 
+
+import { useState } from "react";
 //const customCountry = 'United Kingdom'; 
 // Default value for customCountry "Edit Github repo file:  /src/components/PreviewControls.tsx"
 
 export const cleanLocation = (location: string, customCountry: string): string => {
+  const [customCountry, setCustomCountry] = useState("United Kingdom");
+
+  
   // Check if location is empty
   if (!location) return customCountry;
 
