@@ -107,10 +107,17 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
       
 
       <div className="flex items-center gap-2">
-        <label htmlFor="customDomain" className="text-sm whitespace-nowrap">How to change default values ?</label>
+        <label
+          htmlFor="defaultValuesInfo"
+          className="text-sm whitespace-nowrap"
+        >
+          How to change default values?
+        </label>
         <Input
-          placeholder="Edit Github repo file:  /src/components/PreviewControls.tsx"
+          id="defaultValuesInfo"
+          placeholder="Edit Github repo file: /src/components/PreviewControls.tsx"
           className="max-w-xs"
+          readOnly // Marked as read-only to clarify its purpose
         />
       </div>
 
