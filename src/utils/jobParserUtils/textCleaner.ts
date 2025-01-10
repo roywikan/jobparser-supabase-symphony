@@ -44,12 +44,13 @@ export const cleanUrl = (url: string): string => {
 };
 
 export const cleanLocation = (location: string): string => {
-  if (!location) return '';
+ 
   
-  // If location is "Remote", return it as is
-  if (location.toLowerCase() === 'remote') {
-    return 'Remote';
-  }
+// If location contains "Remote", return a formatted string
+if (location.toLowerCase().includes('remote')) {
+  return 'Remote Job';
+}
+
   
   // Remove everything after "via" (case insensitive)
   const viaIndex = location.toLowerCase().indexOf(' via ');
@@ -59,9 +60,9 @@ export const cleanLocation = (location: string): string => {
   
   // Also check for just "via" at the start
   if (location.toLowerCase().startsWith('via ')) {
-    return '';
+    return customCountry;
   }
-  
+  if (!location) return customCountry;
   return location.trim();
 };
 
