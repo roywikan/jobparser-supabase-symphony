@@ -1,5 +1,4 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { encode as base64Encode } from 'https://deno.land/std@0.168.0/encoding/base64.ts'
 import { generateIndexHtml, generateIndexCss } from './utils/generateIndexFiles.ts'
 import { fetchRepoFiles, fetchFileContent, commitFile } from './utils/githubApi.ts'
 
@@ -11,7 +10,6 @@ const corsHeaders = {
 const JOBS_PER_PAGE = 12;
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -20,7 +18,6 @@ serve(async (req) => {
     const { content, fileName, repo, branch, regenerateIndex = false, customDomain } = await req.json()
     console.log('Received request:', { fileName, repo, branch, regenerateIndex });
     
-    // If not just regenerating index, commit the job post file
     if (!regenerateIndex) {
       try {
         await commitFile(repo, fileName, content, branch);
@@ -34,7 +31,6 @@ serve(async (req) => {
       }
     }
 
-    // Get all HTML files in the repository
     try {
       const files = await fetchRepoFiles(repo);
       const htmlFiles = files.filter(file => 
@@ -42,11 +38,8 @@ serve(async (req) => {
       );
       console.log('Found HTML files:', htmlFiles.length);
 
-      // Get content of each HTML file to extract job details
       const jobs = await Promise.all(htmlFiles.map(async (file) => {
         const html = await fetchFileContent(file.download_url);
-        
-        // Extract job details from HTML
         const titleMatch = html.match(/<title>(.*?)<\/title>/);
         const companyMatch = html.match(/<strong>Company:<\/strong> (.*?)<\/p>/);
         const locationMatch = html.match(/<strong>Location:<\/strong> (.*?)<\/p>/);
@@ -59,13 +52,9 @@ serve(async (req) => {
         };
       }));
 
-      // Sort jobs by filename (newest first)
       jobs.sort((a, b) => b.fileName.localeCompare(a.fileName));
-
-      // Calculate total pages needed
       const totalPages = Math.ceil(jobs.length / JOBS_PER_PAGE);
 
-      // Generate and commit index.html and index-{n}.html files
       for (let page = 1; page <= totalPages; page++) {
         const indexHtml = generateIndexHtml(jobs, page, customDomain);
         const fileName = page === 1 ? 'index.html' : `index-${page}.html`;
@@ -73,7 +62,6 @@ serve(async (req) => {
         console.log(`Generated and committed ${fileName}`);
       }
 
-      // Only generate and commit index.css if it's a new job post or if index.css doesn't exist
       if (!regenerateIndex) {
         const cssExists = files.some(file => file.name === 'index.css');
         if (!cssExists) {
