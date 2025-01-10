@@ -43,28 +43,34 @@ export const cleanUrl = (url: string): string => {
   return cleaned;
 };
 
-export const cleanLocation = (location: string): string => {
- 
-  
-// If location contains "Remote", return a formatted string
-if (location.toLowerCase().includes('remote')) {
-  return 'Remote Job';
-}
+//const customCountry = 'United Kingdom'; // Default value for customCountry "Edit Github repo file:  /src/components/PreviewControls.tsx"
 
-  
+export const cleanLocation = (location: string): string => {
+  // Check if location is empty
+  if (!location) return customCountry;
+
+  const lowerCaseLocation = location.toLowerCase();
+
+  // If location contains "Remote", return a formatted string
+  if (lowerCaseLocation.includes('remote')) {
+    return 'Remote Job';
+  }
+
   // Remove everything after "via" (case insensitive)
-  const viaIndex = location.toLowerCase().indexOf(' via ');
+  const viaIndex = lowerCaseLocation.indexOf(' via ');
   if (viaIndex !== -1) {
     return location.substring(0, viaIndex).trim();
   }
-  
-  // Also check for just "via" at the start
-  if (location.toLowerCase().startsWith('via ')) {
+
+  // Check for "via" at the start
+  if (lowerCaseLocation.startsWith('via ')) {
     return customCountry;
   }
-  if (!location) return customCountry;
+
+  // Return trimmed location
   return location.trim();
 };
+
 
 export const formatListContent = (content: string): string => {
   if (!content) return '';
