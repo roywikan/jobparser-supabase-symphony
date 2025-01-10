@@ -43,7 +43,8 @@ export const cleanUrl = (url: string): string => {
   return cleaned;
 };
 
-//const customCountry = 'United Kingdom'; // Default value for customCountry "Edit Github repo file:  /src/components/PreviewControls.tsx"
+const customCountry = 'United Kingdom'; 
+// Default value for customCountry "Edit Github repo file:  /src/components/PreviewControls.tsx"
 
 export const cleanLocation = (location: string): string => {
   // Check if location is empty
