@@ -92,7 +92,7 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
           className="flex items-center gap-2"
         >
           <Github className="h-4 w-4" />
-          Send to GitHub
+          Send HTML to GitHub repo
         </Button>
         <Button
           onClick={handleRegenerateIndex}
@@ -101,9 +101,24 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
           className="flex items-center gap-2"
         >
           <RefreshCw className="h-4 w-4" />
-          Regenerate Index
+          Regenerate Index HTMLs File
         </Button>
       </div>
+      
+
+      <div className="flex items-center gap-2">
+        <label htmlFor="customDomain" className="text-sm whitespace-nowrap">How to change default values ?</label>
+        <Input
+          placeholder="Edit Github repo file:  /src/components/PreviewControls.tsx"
+          className="max-w-xs"
+        />
+      </div>
+
+
+
+
+
+      
       <div className="flex items-center gap-2">
         <label htmlFor="customDomain" className="text-sm whitespace-nowrap">Custom Domain:</label>
         <Input
@@ -130,7 +145,7 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
           id="customCountry"
           value={customCountry}
           onChange={(e) => setCustomCountry(e.target.value)}
-          placeholder="United Kingdom"
+          placeholder="Leave empty for default"
           className="max-w-xs"
         />
       </div>
