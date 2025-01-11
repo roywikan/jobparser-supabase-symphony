@@ -28,16 +28,18 @@ const AuthPage = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            Welcome Back
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in is required to use the job post parser
+            Sign in with your social account to continue
           </p>
         </div>
         <Auth
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           providers={["google", "github"]}
+          view="magic_link"
+          showLinks={false}
           redirectTo={`${window.location.origin}`}
         />
       </div>
