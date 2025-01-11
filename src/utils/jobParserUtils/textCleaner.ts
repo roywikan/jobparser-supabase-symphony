@@ -43,14 +43,17 @@ export const cleanUrl = (url: string): string => {
   return cleaned;
 };
 
+// Create a context to manage the custom country state
+import { createContext, useContext } from 'react';
 
-import { useState } from "react";
-//const customCountry = 'United Kingdom'; 
-// Default value for customCountry "Edit Github repo file:  /src/components/PreviewControls.tsx"
+export const CustomCountryContext = createContext<string>("United Kingdom");
+
+export const useCustomCountry = () => {
+  return useContext(CustomCountryContext);
+};
 
 export const cleanLocation = (location: string): string => {
-  const [customCountry] = useState("United Kingdom");
-
+  const customCountry = useCustomCountry();
   
   // Check if location is empty
   if (!location) return customCountry;
@@ -76,31 +79,6 @@ export const cleanLocation = (location: string): string => {
   // Return trimmed location
   return location.trim();
 };
-
-export const OLDcleanLocation = (location: string): string => {
-  if (!location) return '';
-  
-  // If location is "Remote", return it as is
-  if (location.toLowerCase() === 'remote') {
-    return 'Remote';
-  }
-  
-  // Remove everything after "via" (case insensitive)
-  const viaIndex = location.toLowerCase().indexOf(' via ');
-  if (viaIndex !== -1) {
-    return location.substring(0, viaIndex).trim();
-  }
-  
-  // Also check for just "via" at the start
-  if (location.toLowerCase().startsWith('via ')) {
-    return '';
-  }
-  
-  return location.trim();
-};
-
-
-
 
 export const formatListContent = (content: string): string => {
   if (!content) return '';

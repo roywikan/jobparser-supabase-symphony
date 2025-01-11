@@ -10,9 +10,10 @@ interface PreviewControlsProps {
   onCopy: () => Promise<void>;
   htmlContent: string;
   slug: string;
+  onCustomCountryChange?: (country: string) => void;
 }
 
-const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) => {
+const PreviewControls = ({ onCopy, htmlContent, slug, onCustomCountryChange }: PreviewControlsProps) => {
   const [customDomain, setCustomDomain] = useState("");
   const [customRepo, setCustomRepo] = useState("");
   const [customCountry, setCustomCountry] = useState("United Kingdom");
@@ -22,6 +23,11 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
   
   // Internal function to get the effective repository
   const getEffectiveRepo = () => customRepo || "roywikan/job-uk";
+
+  const handleCustomCountryChange = (value: string) => {
+    setCustomCountry(value);
+    onCustomCountryChange?.(value);
+  };
 
   const handleSendToGithub = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -104,7 +110,6 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
           Regenerate Index HTMLs File
         </Button>
       </div>
-      
 
       <div className="flex items-center gap-2">
         <label
@@ -117,15 +122,10 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
           id="defaultValuesInfo"
           placeholder="Edit: /src/components/PreviewControls.tsx"
           className="max-w-xs"
-          readOnly // Marked as read-only to clarify its purpose
+          readOnly
         />
       </div>
 
-
-
-
-
-      
       <div className="flex items-center gap-2">
         <label htmlFor="customDomain" className="text-sm whitespace-nowrap">Custom Domain:</label>
         <Input
@@ -151,7 +151,7 @@ const PreviewControls = ({ onCopy, htmlContent, slug }: PreviewControlsProps) =>
         <Input
           id="customCountry"
           value={customCountry}
-          onChange={(e) => setCustomCountry(e.target.value)}
+          onChange={(e) => handleCustomCountryChange(e.target.value)}
           placeholder="Leave empty for default"
           className="max-w-xs"
         />
