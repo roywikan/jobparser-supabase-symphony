@@ -51,6 +51,23 @@ export const generateHashtags = (title: string, maxTags = 7) => {
   };
 };
 
+const getCurrencyCode = (salaryString: string): string => {
+  if (!salaryString) return 'USD';
+  
+  if (salaryString.includes('£')) return 'GBP';
+  if (salaryString.includes('€')) return 'EUR';
+  if (salaryString.includes('¥')) return 'JPY';
+  if (salaryString.includes('₹')) return 'INR';
+  if (salaryString.includes('RM') || salaryString.includes('MYR')) return 'MYR';
+  if (salaryString.includes('AU$') || salaryString.includes('AUD')) return 'AUD';
+  if (salaryString.includes('Rp') || salaryString.includes('IDR')) return 'IDR';
+  if (salaryString.includes('S$') || salaryString.includes('SGD')) return 'SGD';
+  if (salaryString.includes('₩')) return 'KRW';
+  
+  // Default to USD for $ or if no currency symbol is found
+  return 'USD';
+};
+
 export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -172,7 +189,16 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
     <script type="application/ld+json">${JSON.stringify({
       ...job.jsonLd,
       title: job.pageTitle,
-      image: job.imageUrl || undefined
+      image: job.imageUrl || undefined,
+      baseSalary: {
+        "@type": "MonetaryAmount",
+        "currency": getCurrencyCode(job.salary),
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": job.salary,
+          "unitText": "YEAR"
+        }
+      }
     }, null, 2)}</script>
 </body>
 </html>`;
