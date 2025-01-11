@@ -28,26 +28,27 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
 
   const hashtags = generateHashtags(pageTitle);
 
+  // Preserve original values before cleaning
   const cleanedJob = {
     ...parsedJob,
     pageTitle,
     jobTitle: pageTitle, // Set job title to match og:title
     imageUrl: cleanField(parsedJob.imageUrl),
-    company: cleanField(parsedJob.company),
-    location: cleanLocation(parsedJob.location), // Use new cleanLocation function
-    jobType: cleanField(parsedJob.jobType),
-    salary: cleanField(parsedJob.salary),
-    description: cleanField(parsedJob.description),
-    qualifications: parsedJob.qualifications?.map(cleanField).filter(Boolean),
-    benefits: parsedJob.benefits?.map(cleanField).filter(Boolean),
-    responsibilities: parsedJob.responsibilities?.map(cleanField).filter(Boolean),
-    metaDescription: cleanMetaField(parsedJob.metaDescription),
-    applyLink: cleanUrl(parsedJob.applyLink),
+    company: cleanField(parsedJob.company || ''), // Add fallback for empty company
+    location: cleanLocation(parsedJob.location || ''), // Add fallback for empty location
+    jobType: cleanField(parsedJob.jobType || ''), // Add fallback for empty job type
+    salary: cleanField(parsedJob.salary || ''), // Add fallback for empty salary
+    description: cleanField(parsedJob.description || ''),
+    qualifications: (parsedJob.qualifications || []).map(cleanField).filter(Boolean),
+    benefits: (parsedJob.benefits || []).map(cleanField).filter(Boolean),
+    responsibilities: (parsedJob.responsibilities || []).map(cleanField).filter(Boolean),
+    metaDescription: cleanMetaField(parsedJob.metaDescription || ''),
+    applyLink: cleanUrl(parsedJob.applyLink || ''),
     slug: parsedJob.slug,
     jsonLd: {
       ...parsedJob.jsonLd,
       title: pageTitle,
-      description: cleanJsonLdField(parsedJob.jsonLd?.description),
+      description: cleanJsonLdField(parsedJob.jsonLd?.description || ''),
     },
   };
 
