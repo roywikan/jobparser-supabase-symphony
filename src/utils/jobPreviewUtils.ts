@@ -32,29 +32,45 @@ export const cleanMetaField = (field: string) => {
 
 const parseSalaryValue = (salaryString: string): string => {
   if (!salaryString) return '';
+  
   // Remove currency symbols and extra spaces
-  return salaryString
-    .replace(/[£$€¥₹Rp\s]/g, '')
-    .replace(/^(AUD|MYR|IDR|SGD|USD|GBP|EUR|JPY|INR|KRW)/i, '')
+  const numericValue = salaryString
+    .replace(/[£$€¥₹Rp\s]/g, '') // Remove currency symbols
+    .replace(/[^0-9.]+/g, '') // Remove non-numeric characters, leaving numbers and decimals
     .trim();
+  
+  return numericValue;
 };
 
 const getCurrencyCode = (salaryString: string): string => {
   if (!salaryString) return 'USD';
-  
+
+  // Check for specific currency symbols or abbreviations
   if (salaryString.includes('£')) return 'GBP';
   if (salaryString.includes('€')) return 'EUR';
   if (salaryString.includes('¥')) return 'JPY';
   if (salaryString.includes('₹')) return 'INR';
   if (salaryString.includes('RM') || salaryString.includes('MYR')) return 'MYR';
-  if (salaryString.includes('AU$') || salaryString.includes('AUD')) return 'AUD';
+  if (salaryString.includes('AU$')) return 'AUD';
   if (salaryString.includes('Rp') || salaryString.includes('IDR')) return 'IDR';
-  if (salaryString.includes('S$') || salaryString.includes('SGD')) return 'SGD';
+  if (salaryString.includes('S$')) return 'SGD';
   if (salaryString.includes('₩')) return 'KRW';
   
-  // Default to USD for $ or if no currency symbol is found
+  // Default to USD for $ or if no specific currency symbol is found
   return 'USD';
 };
+
+const getSalaryUnit = (salaryString: string): string => {
+  // Check for common units like 'hour', 'year', 'month', 'week'
+  if (/hour/i.test(salaryString)) return 'HOUR';
+  if (/year/i.test(salaryString)) return 'YEAR';
+  if (/month/i.test(salaryString)) return 'MONTH';
+  if (/week/i.test(salaryString)) return 'WEEK';
+  
+  // Default to 'YEAR' if no unit is found (you can adjust this if necessary)
+  return 'YEAR';
+};
+
 
 export const generateHashtags = (title: string, maxTags = 7) => {
   const hashtags = title
