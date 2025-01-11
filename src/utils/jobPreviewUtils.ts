@@ -30,6 +30,32 @@ export const cleanMetaField = (field: string) => {
     .trim();
 };
 
+const parseSalaryValue = (salaryString: string): string => {
+  if (!salaryString) return '';
+  // Remove currency symbols and extra spaces
+  return salaryString
+    .replace(/[£$€¥₹Rp\s]/g, '')
+    .replace(/^(AUD|MYR|IDR|SGD|USD|GBP|EUR|JPY|INR|KRW)/i, '')
+    .trim();
+};
+
+const getCurrencyCode = (salaryString: string): string => {
+  if (!salaryString) return 'USD';
+  
+  if (salaryString.includes('£')) return 'GBP';
+  if (salaryString.includes('€')) return 'EUR';
+  if (salaryString.includes('¥')) return 'JPY';
+  if (salaryString.includes('₹')) return 'INR';
+  if (salaryString.includes('RM') || salaryString.includes('MYR')) return 'MYR';
+  if (salaryString.includes('AU$') || salaryString.includes('AUD')) return 'AUD';
+  if (salaryString.includes('Rp') || salaryString.includes('IDR')) return 'IDR';
+  if (salaryString.includes('S$') || salaryString.includes('SGD')) return 'SGD';
+  if (salaryString.includes('₩')) return 'KRW';
+  
+  // Default to USD for $ or if no currency symbol is found
+  return 'USD';
+};
+
 export const generateHashtags = (title: string, maxTags = 7) => {
   const hashtags = title
     .toLowerCase()
@@ -49,23 +75,6 @@ export const generateHashtags = (title: string, maxTags = 7) => {
     plainList: hashtags.join(', '),
     spaceHashList: hashtags.map(tag => `# ${tag}`).join(', '),
   };
-};
-
-const getCurrencyCode = (salaryString: string): string => {
-  if (!salaryString) return 'USD';
-  
-  if (salaryString.includes('£')) return 'GBP';
-  if (salaryString.includes('€')) return 'EUR';
-  if (salaryString.includes('¥')) return 'JPY';
-  if (salaryString.includes('₹')) return 'INR';
-  if (salaryString.includes('RM') || salaryString.includes('MYR')) return 'MYR';
-  if (salaryString.includes('AU$') || salaryString.includes('AUD')) return 'AUD';
-  if (salaryString.includes('Rp') || salaryString.includes('IDR')) return 'IDR';
-  if (salaryString.includes('S$') || salaryString.includes('SGD')) return 'SGD';
-  if (salaryString.includes('₩')) return 'KRW';
-  
-  // Default to USD for $ or if no currency symbol is found
-  return 'USD';
 };
 
 export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `<!DOCTYPE html>
@@ -195,8 +204,8 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
         "currency": getCurrencyCode(job.salary),
         "value": {
           "@type": "QuantitativeValue",
-          "value": job.salary,
-          "unitText": "YEAR"
+          "value": parseSalaryValue(job.salary),
+          "unitText": "HOUR"
         }
       }
     }, null, 2)}</script>
