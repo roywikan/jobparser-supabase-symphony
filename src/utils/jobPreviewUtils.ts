@@ -116,7 +116,7 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
         ${job.description ? `
         <section>
             <h2>Job Description</h2>
-            <p>${job.description}</p>
+            <div class="job-description">${job.description}</div>
         </section>` : ''}
         
         ${job.qualifications?.length ? `

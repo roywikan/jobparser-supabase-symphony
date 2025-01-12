@@ -153,11 +153,13 @@ export const parseResponsibilities = (html: string): string[] => {
   return items.map(item => formatListContent(item));
 };
 
-export const parseDescription = (html: string): string => {
+export const parseDescription = (html: string): { formatted: string; plain: string } => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
   const nguyPeDiv = doc.querySelector('.NgUYpe div');
+  let rawDescription = '';
+  
   if (nguyPeDiv) {
     const header = nguyPeDiv.querySelector('.FkMLeb');
     if (header && header.textContent?.includes('Job description')) {
@@ -166,19 +168,30 @@ export const parseDescription = (html: string): string => {
         dotsSpan.remove();
       }
       
-      const description = Array.from(nguyPeDiv.querySelectorAll('span'))
+      rawDescription = Array.from(nguyPeDiv.querySelectorAll('span'))
         .map(span => span.textContent?.trim())
         .filter(Boolean)
         .join('\n');
-        
-      if (description) {
-        return formatListContent(description);
-      }
     }
   }
   
-  const us2QZbElement = doc.querySelector('.us2QZb');
-  return formatListContent(us2QZbElement?.textContent?.trim() || '');
+  if (!rawDescription) {
+    const us2QZbElement = doc.querySelector('.us2QZb');
+    rawDescription = us2QZbElement?.textContent?.trim() || '';
+  }
+  
+  const formattedDescription = formatListContent(rawDescription)
+    .replace(/\n/g, '<br>'); // Convert newlines to <br> tags
+  
+  const plainDescription = formatListContent(rawDescription)
+    .replace(/<br>/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' '); // Collapse multiple spaces
+    
+  return {
+    formatted: formattedDescription,
+    plain: plainDescription
+  };
 };
 
 export const parseApplyLink = (html: string): string => {
@@ -220,14 +233,14 @@ export const parseJobDetails = (html: string) => {
   const responsibilities = parseResponsibilities(html);
   console.log('Parsed responsibilities:', responsibilities);
   
-  const description = parseDescription(html);
+  const { formatted: description, plain: descriptionPlain } = parseDescription(html);
   console.log('Parsed description length:', description.length);
   
   const applyLink = parseApplyLink(html);
   console.log('Parsed apply link:', applyLink);
   
   const slug = generateSlug(jobTitle, company);
-  const metaDescription = cleanMetaDescription(description);
+  const metaDescription = cleanMetaDescription(descriptionPlain); // Use plain version for meta
   const imageUrl = getRandomJobImage();
   console.log('Selected random image URL:', imageUrl);
   
@@ -241,13 +254,17 @@ export const parseJobDetails = (html: string) => {
     benefits,
     responsibilities,
     description,
+    descriptionPlain,
     applyLink,
     slug,
     metaDescription,
     imageUrl
   };
   
-  const jsonLd = generateJsonLd(jobData);
+  const jsonLd = generateJsonLd({
+    ...jobData,
+    description: descriptionPlain // Use plain version for JSON-LD
+  });
   
   return {
     ...jobData,
