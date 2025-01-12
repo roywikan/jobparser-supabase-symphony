@@ -11,6 +11,7 @@ import ParserConfigGuide from '@/components/ParserConfigGuide';
 import Footer from '@/components/Footer';
 import { generateHashtags, parseSalaryValue, getCurrencyCode, getSalaryUnit } from '@/utils/jobPreviewUtils';
 
+const Index = () => {
   const [htmlInput, setHtmlInput] = useState('');
   const [parsedJob, setParsedJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ import { generateHashtags, parseSalaryValue, getCurrencyCode, getSalaryUnit } fr
     });
   };
 
-const handleParse = () => {
+  const handleParse = () => {
     try {
       const jobDetails = parseJobDetails(htmlInput);
       const formattedTitle = `${jobDetails.company} - ${jobDetails.jobTitle}${jobDetails.location ? ` - ${jobDetails.location}` : ''}`;
@@ -286,7 +287,6 @@ const handleParse = () => {
             </div>
           </Card>
         )}
-
       </div>
 
       {parsedJob && <JobPostPreview parsedJob={parsedJob} />}
