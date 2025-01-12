@@ -9,9 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import JobPostPreview from '@/components/JobPostPreview';
 import ParserConfigGuide from '@/components/ParserConfigGuide';
 import Footer from '@/components/Footer';
-import { generateHashtags } from '@/utils/jobPreviewUtils';
+import { generateHashtags, parseSalaryValue, getCurrencyCode, getSalaryUnit } from '@/utils/jobPreviewUtils';
 
-const Index = () => {
   const [htmlInput, setHtmlInput] = useState('');
   const [parsedJob, setParsedJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -24,17 +23,30 @@ const Index = () => {
     });
   };
 
-  const handleParse = () => {
+const handleParse = () => {
     try {
       const jobDetails = parseJobDetails(htmlInput);
-      // Format the job title to match pageTitle format
       const formattedTitle = `${jobDetails.company} - ${jobDetails.jobTitle}${jobDetails.location ? ` - ${jobDetails.location}` : ''}`;
       
+      // Update jsonLd with correct salary formatting
+      const jsonLd = {
+        ...jobDetails.jsonLd,
+        baseSalary: {
+          "@type": "MonetaryAmount",
+          "currency": getCurrencyCode(jobDetails.salary),
+          "value": {
+            "@type": "QuantitativeValue",
+            "value": parseSalaryValue(jobDetails.salary),
+            "unitText": getSalaryUnit(jobDetails.salary)
+          }
+        }
+      };
+
       setParsedJob({
         ...jobDetails,
-        jobTitle: formattedTitle // Set the formatted title
+        jobTitle: formattedTitle,
+        jsonLd
       });
-
       
       toast({
         title: "Successfully parsed job details",
