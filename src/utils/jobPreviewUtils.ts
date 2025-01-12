@@ -30,7 +30,7 @@ export const cleanMetaField = (field: string) => {
     .trim();
 };
 
-const parseSalaryValue = (salaryString: string): string => {
+export const parseSalaryValue = (salaryString: string): string => {
   if (!salaryString) return '';
   
   // Remove currency symbols and extra spaces
@@ -43,7 +43,7 @@ const parseSalaryValue = (salaryString: string): string => {
   return numericValue;
 };
 
-const getCurrencyCode = (salaryString: string): string => {
+export const getCurrencyCode = (salaryString: string): string => {
   if (!salaryString) return 'USD';
 
   // Check for specific currency symbols or abbreviations
@@ -61,7 +61,7 @@ const getCurrencyCode = (salaryString: string): string => {
   return 'USD';
 };
 
-const getSalaryUnit = (salaryString: string): string => {
+export const getSalaryUnit = (salaryString: string): string => {
   if (/hour|hr|ph/i.test(salaryString)) return 'HOUR';
   if (/year|yr|pa|per annum/i.test(salaryString)) return 'YEAR';
   if (/month|mo|pm/i.test(salaryString)) return 'MONTH';
