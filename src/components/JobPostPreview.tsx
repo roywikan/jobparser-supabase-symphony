@@ -15,9 +15,10 @@ const removeDuplicatePhrases = (title: string): string => {
 
 interface JobPostPreviewProps {
   parsedJob: any;
+  rawHtml?: string; // Add new prop for raw HTML
 }
 
-const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
+const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
   if (!parsedJob) return null;
 
   const formattedDate = new Date().toISOString();
@@ -63,6 +64,24 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
     }
   };
 
+  // Extract raw job description from HTML
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(rawHtml || '', 'text/html');
+  const nguyPeDiv = doc.querySelector('.NgUYpe div');
+  let rawDescription = '';
+  
+  if (nguyPeDiv) {
+    const header = nguyPeDiv.querySelector('.FkMLeb');
+    if (header && header.textContent?.includes('Job description')) {
+      rawDescription = nguyPeDiv.innerHTML;
+    }
+  }
+
+  if (!rawDescription) {
+    const us2QZbElement = doc.querySelector('.us2QZb');
+    rawDescription = us2QZbElement?.innerHTML || '';
+  }
+
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -74,6 +93,16 @@ const JobPostPreview = ({ parsedJob }: JobPostPreviewProps) => {
         />
       </div>
       <div className="space-y-4">
+        {rawHtml && (
+          <div className="space-y-2">
+            <h3 className="text-lg font-medium">Raw Job Description HTML</h3>
+            <Textarea
+              value={rawDescription}
+              readOnly
+              className="min-h-[150px] font-mono text-sm"
+            />
+          </div>
+        )}
         <Textarea
           value={htmlContent}
           onChange={(e) => setHtmlContent(e.target.value)}
