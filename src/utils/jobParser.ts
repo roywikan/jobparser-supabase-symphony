@@ -181,7 +181,7 @@ export const parseDescription = (html: string): { formatted: string; plain: stri
   }
   
   const formattedDescription = formatListContent(rawDescription)
-    .replace(/\n/g, '<br>'); // Convert newlines to <br> tags
+    .replace(/\n/g, '<br>'); // Convert newlines to <br> tags for HTML display
   
   const plainDescription = formatListContent(rawDescription)
     .replace(/<br>/g, ' ')
