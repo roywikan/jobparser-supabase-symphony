@@ -36,7 +36,8 @@ const parseSalaryValue = (salaryString: string): string => {
   // Remove currency symbols and extra spaces
   const numericValue = salaryString
     .replace(/[£$€¥₹Rp\s]/g, '') // Remove currency symbols
-    .replace(/[^0-9.]+/g, '') // Remove non-numeric characters, leaving numbers and decimals
+    .replace(/^(AUD|MYR|IDR|SGD|USD|GBP|EUR|JPY|INR|KRW)/i, '') // Remove currency codes
+    .replace(/[^0-9.]+/g, '') // Remove non-numeric characters except decimal point
     .trim();
   
   return numericValue;
@@ -61,25 +62,18 @@ const getCurrencyCode = (salaryString: string): string => {
 };
 
 const getSalaryUnit = (salaryString: string): string => {
-  // Check for common units like 'hour', 'year', 'month', 'week'
-  if (/hour/i.test(salaryString)) return 'HOUR';
-  if (/year/i.test(salaryString)) return 'YEAR';
-  if (/month/i.test(salaryString)) return 'MONTH';
-  if (/week/i.test(salaryString)) return 'WEEK';
-  
-  // Default to 'YEAR' if no unit is found (you can adjust this if necessary)
-  return 'YEAR';
+  if (/hour|hr|ph/i.test(salaryString)) return 'HOUR';
+  if (/year|yr|pa|per annum/i.test(salaryString)) return 'YEAR';
+  if (/month|mo|pm/i.test(salaryString)) return 'MONTH';
+  if (/week|wk|pw/i.test(salaryString)) return 'WEEK';
+  return 'YEAR'; // Default to YEAR if no unit found
 };
-
 
 export const generateHashtags = (title: string, maxTags = 7) => {
   const hashtags = title
     .toLowerCase()
-    // Ganti semua karakter khusus kecuali - dengan spasi
     .replace(/[^a-z0-9\-\s]/g, ' ')
-    // Pisahkan berdasarkan spasi atau -
     .split(/[\s-]+/)
-    // Filter kata yang terlalu pendek dan hapus whitespace
     .filter(word => word.length > 2 && word.trim())
     .map(word => word.trim())
     .filter(Boolean)
@@ -221,7 +215,7 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
         "value": {
           "@type": "QuantitativeValue",
           "value": parseSalaryValue(job.salary),
-          "unitText": "HOUR"
+          "unitText": getSalaryUnit(job.salary)
         }
       }
     }, null, 2)}</script>
