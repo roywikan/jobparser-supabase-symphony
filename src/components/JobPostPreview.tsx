@@ -107,8 +107,8 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
             value={rawDescription}
             readOnly
             className="min-h-[150px] font-mono text-sm"
-          />
-        </div><hr>
+          /><hr />
+        </div>
       )}
       
       <div>
