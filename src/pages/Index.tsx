@@ -9,26 +9,36 @@ import { supabase } from '@/integrations/supabase/client';
 import JobPostPreview from '@/components/JobPostPreview';
 import ParserConfigGuide from '@/components/ParserConfigGuide';
 import Footer from '@/components/Footer';
-import { generateHashtags, parseSalaryValue, getCurrencyCode, getSalaryUnit } from '@/utils/jobPreviewUtils';
+import { generateHashtags, parseSalaryValue, getCurrencyCode, getSalaryUnit, cleanDescription } from '@/utils/jobPreviewUtils';
 
 const Index = () => {
   const [htmlInput, setHtmlInput] = useState('');
   const [parsedJob, setParsedJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account.",
-    });
-  };
-
   const handleParse = () => {
     try {
       const jobDetails = parseJobDetails(htmlInput);
       const formattedTitle = `${jobDetails.company} - ${jobDetails.jobTitle}${jobDetails.location ? ` - ${jobDetails.location}` : ''}`;
       
+      // Parse the raw HTML to extract job description
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlInput || '', 'text/html');
+      const nguyPeDiv = doc.querySelector('.NgUYpe div');
+      let rawDescription = '';
+      
+      if (nguyPeDiv) {
+        const header = nguyPeDiv.querySelector('.FkMLeb');
+        if (header && header.textContent?.includes('Job description')) {
+          rawDescription = nguyPeDiv.innerHTML;
+        }
+      }
+
+      if (!rawDescription) {
+        const us2QZbElement = doc.querySelector('.us2QZb');
+        rawDescription = us2QZbElement?.innerHTML || '';
+      }
+
       // Update jsonLd with correct salary formatting
       const jsonLd = {
         ...jobDetails.jsonLd,
@@ -46,6 +56,7 @@ const Index = () => {
       setParsedJob({
         ...jobDetails,
         jobTitle: formattedTitle,
+        description: cleanDescription(rawDescription || ''),
         jsonLd
       });
       

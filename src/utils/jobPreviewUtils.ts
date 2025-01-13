@@ -221,3 +221,45 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
     }, null, 2)}</script>
 </body>
 </html>`;
+
+export const cleanDescription = (html: string) => {
+  if (!html) return '';
+  return html
+    .replace(/<h3[^>]*>.*?<\/h3>/g, '') // Remove h3 tags
+    .replace(/<span[^>]*>(.*?)<\/span>/g, '$1') // Remove span tags but keep content
+    .replace(/\s*<br>\s*/g, '<br>') // Normalize br tags
+    .replace(/(<br>){4,}/g, '<br><br><br>') // Replace multiple br tags with double br
+    .trim();
+};
+
+export const formatListContent = (content: string): string => {
+  if (!content) return '';
+  
+  return content
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/Job highlights Identified by Google from the original job post/g, '')
+    .replace(/Identified by Google from the original job post/g, '')
+    .replace(/<h4 class="yVFmQd cS4Vcb-pGL6qe-KUvarc">/g, '<br><br>')
+    .replace(/<\/li><li class="LevrW">/g, '<BR>- ')
+    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '<BR>- ')
+    .replace(/([.!?])([A-Z])/g, '$1 $2')
+    .replace(/items\(s\)Benefits/g, 'items(s)\nBenefits')
+    .replace(/items\(s\)Responsibilities/g, 'items(s)\nResponsibilities')
+    .trim();
+};
+
+export const formatJsonLdContent = (content: string): string => {
+  if (!content) return '';
+  
+  return content
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/Job highlights Identified by Google from the original job post/g, '')
+    .replace(/Identified by Google from the original job post/g, '')
+    .replace(/<h4 class="yVFmQd cS4Vcb-pGL6qe-KUvarc">/g, '\n\n')
+    .replace(/<\/li><li class="LevrW">/g, '\n- ')
+    .replace(/<\/li><li jsname="wsRnQ" style="" class="LevrW">/g, '\n- ')
+    .replace(/([.!?])([A-Z])/g, '$1 $2')
+    .replace(/items\(s\)Benefits/g, 'items(s)\nBenefits')
+    .replace(/items\(s\)Responsibilities/g, 'items(s)\nResponsibilities')
+    .trim();
+};
