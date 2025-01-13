@@ -29,6 +29,17 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
 
   const hashtags = generateHashtags(pageTitle);
 
+  // Clean and format the job description
+  const cleanDescription = (html: string) => {
+    if (!html) return '';
+    return html
+      .replace(/<h3[^>]*>.*?<\/h3>/g, '') // Remove h3 tags
+      .replace(/<span[^>]*>(.*?)<\/span>/g, '$1') // Remove span tags but keep content
+      .replace(/\s*<br>\s*/g, '<br>') // Normalize br tags
+      .replace(/(<br>){3,}/g, '<br><br>') // Replace multiple br tags with double br
+      .trim();
+  };
+
   // Preserve original values before cleaning
   const cleanedJob = {
     ...parsedJob,
@@ -39,7 +50,7 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
     location: cleanLocation(parsedJob.location || ''),
     jobType: cleanField(parsedJob.jobType || ''),
     salary: cleanField(parsedJob.salary || ''),
-    description: parsedJob.description?.replace(/\n/g, '<br>') || '', // Preserve line breaks
+    description: cleanDescription(parsedJob.description || ''),
     qualifications: (parsedJob.qualifications || []).map(cleanField).filter(Boolean),
     benefits: (parsedJob.benefits || []).map(cleanField).filter(Boolean),
     responsibilities: (parsedJob.responsibilities || []).map(cleanField).filter(Boolean),
