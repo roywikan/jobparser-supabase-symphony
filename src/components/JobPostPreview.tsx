@@ -15,7 +15,7 @@ const removeDuplicatePhrases = (title: string): string => {
 
 interface JobPostPreviewProps {
   parsedJob: any;
-  rawHtml?: string; // Add new prop for raw HTML
+  rawHtml?: string;
 }
 
 const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
@@ -33,13 +33,13 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
   const cleanedJob = {
     ...parsedJob,
     pageTitle,
-    jobTitle: pageTitle, // Set job title to match og:title
+    jobTitle: pageTitle,
     imageUrl: cleanField(parsedJob.imageUrl),
-    company: cleanField(parsedJob.company || ''), // Add fallback for empty company
-    location: cleanLocation(parsedJob.location || ''), // Add fallback for empty location
-    jobType: cleanField(parsedJob.jobType || ''), // Add fallback for empty job type
-    salary: cleanField(parsedJob.salary || ''), // Add fallback for empty salary
-    description: cleanField(parsedJob.description || ''),
+    company: cleanField(parsedJob.company || ''),
+    location: cleanLocation(parsedJob.location || ''),
+    jobType: cleanField(parsedJob.jobType || ''),
+    salary: cleanField(parsedJob.salary || ''),
+    description: parsedJob.description?.replace(/\n/g, '<br>') || '', // Preserve line breaks
     qualifications: (parsedJob.qualifications || []).map(cleanField).filter(Boolean),
     benefits: (parsedJob.benefits || []).map(cleanField).filter(Boolean),
     responsibilities: (parsedJob.responsibilities || []).map(cleanField).filter(Boolean),
@@ -83,26 +83,27 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
   }
 
   return (
-    <Card className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">HTML Preview</h2>
-        <PreviewControls 
-          onCopy={handleCopy}
-          htmlContent={htmlContent}
-          slug={cleanedJob.slug}
-        />
-      </div>
-      <div className="space-y-4">
-        {rawHtml && (
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium">Raw Job Description HTML</h3>
-            <Textarea
-              value={rawDescription}
-              readOnly
-              className="min-h-[150px] font-mono text-sm"
-            />
-          </div>
-        )}
+    <Card className="p-6 space-y-6">
+      {rawHtml && (
+        <div className="space-y-2">
+          <h3 className="text-lg font-medium">Raw Job Description HTML</h3>
+          <Textarea
+            value={rawDescription}
+            readOnly
+            className="min-h-[150px] font-mono text-sm"
+          />
+        </div>
+      )}
+      
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">HTML Preview</h2>
+          <PreviewControls 
+            onCopy={handleCopy}
+            htmlContent={htmlContent}
+            slug={cleanedJob.slug}
+          />
+        </div>
         <Textarea
           value={htmlContent}
           onChange={(e) => setHtmlContent(e.target.value)}
