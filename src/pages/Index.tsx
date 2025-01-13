@@ -289,7 +289,7 @@ const Index = () => {
         )}
       </div>
 
-      {parsedJob && <JobPostPreview parsedJob={parsedJob} />}
+      {parsedJob && <JobPostPreview parsedJob={parsedJob} rawHtml={htmlInput} />}
       <ParserConfigGuide />
       <Footer />
     </div>
