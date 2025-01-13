@@ -37,7 +37,9 @@ export const parseSalaryValue = (salaryString: string): string => {
   const numericValue = salaryString
     .replace(/[£$€¥₹Rp\s]/g, '') // Remove currency symbols
     .replace(/^(AUD|MYR|IDR|SGD|USD|GBP|EUR|JPY|INR|KRW)/i, '') // Remove currency codes
-    .replace(/[^0-9.]+/g, '') // Remove non-numeric characters except decimal point
+    //.replace(/[^0-9.]+/g, '') // Remove non-numeric characters except decimal point
+    .replace(/[^0-9.\-]+/g, '') // Allow numeric characters, decimal point, and hyphen
+
     .trim();
   
   return numericValue;
