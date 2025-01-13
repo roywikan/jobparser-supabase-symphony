@@ -16,6 +16,14 @@ const Index = () => {
   const [parsedJob, setParsedJob] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account.",
+    });
+  };
+
   const handleParse = () => {
     try {
       const jobDetails = parseJobDetails(htmlInput);
