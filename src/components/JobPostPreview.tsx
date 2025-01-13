@@ -29,6 +29,27 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
 
   const hashtags = generateHashtags(pageTitle);
 
+
+    // Extract raw job description from HTML
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(rawHtml || '', 'text/html');
+  const nguyPeDiv = doc.querySelector('.NgUYpe div');
+  let rawDescription = '';
+  
+  if (nguyPeDiv) {
+    const header = nguyPeDiv.querySelector('.FkMLeb');
+    if (header && header.textContent?.includes('Job description')) {
+      rawDescription = nguyPeDiv.innerHTML;
+    }
+  }
+
+  if (!rawDescription) {
+    const us2QZbElement = doc.querySelector('.us2QZb');
+    rawDescription = us2QZbElement?.innerHTML || '';
+  }
+
+
+  
   // Clean and format the job description
   const cleanDescription = (html: string) => {
     if (!html) return '';
@@ -36,7 +57,7 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
       .replace(/<h3[^>]*>.*?<\/h3>/g, '') // Remove h3 tags
       .replace(/<span[^>]*>(.*?)<\/span>/g, '$1') // Remove span tags but keep content
       .replace(/\s*<br>\s*/g, '<br>') // Normalize br tags
-      .replace(/(<br>){3,}/g, '<br><br>') // Replace multiple br tags with double br
+      .replace(/(<br>){4,}/g, '<br><br><br>') // Replace multiple br tags with double br
       .trim();
   };
 
@@ -50,7 +71,7 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
     location: cleanLocation(parsedJob.location || ''),
     jobType: cleanField(parsedJob.jobType || ''),
     salary: cleanField(parsedJob.salary || ''),
-    description: cleanDescription(parsedJob.description || ''),
+    description: cleanDescription(rawDescription || ''),
     qualifications: (parsedJob.qualifications || []).map(cleanField).filter(Boolean),
     benefits: (parsedJob.benefits || []).map(cleanField).filter(Boolean),
     responsibilities: (parsedJob.responsibilities || []).map(cleanField).filter(Boolean),
@@ -75,29 +96,13 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
     }
   };
 
-  // Extract raw job description from HTML
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(rawHtml || '', 'text/html');
-  const nguyPeDiv = doc.querySelector('.NgUYpe div');
-  let rawDescription = '';
-  
-  if (nguyPeDiv) {
-    const header = nguyPeDiv.querySelector('.FkMLeb');
-    if (header && header.textContent?.includes('Job description')) {
-      rawDescription = nguyPeDiv.innerHTML;
-    }
-  }
 
-  if (!rawDescription) {
-    const us2QZbElement = doc.querySelector('.us2QZb');
-    rawDescription = us2QZbElement?.innerHTML || '';
-  }
 
   return (
     <Card className="p-6 space-y-6">
       {rawHtml && (
         <div className="space-y-2">
-          <h3 className="text-lg font-medium">Raw Job Description HTML</h3>
+          <h3 className="text-lg font-medium">Reference: Raw Job Description HTML Source</h3>
           <Textarea
             value={rawDescription}
             readOnly
