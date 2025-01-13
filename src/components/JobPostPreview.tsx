@@ -102,18 +102,18 @@ const JobPostPreview = ({ parsedJob, rawHtml }: JobPostPreviewProps) => {
     <Card className="p-6 space-y-6">
       {rawHtml && (
         <div className="space-y-2">
-          <h3 className="text-lg font-medium">Reference: Raw Job Description HTML Source</h3>
+          <h3 className="text-lg font-medium">Reference: Raw Job Description HTML Source :</h3>
           <Textarea
             value={rawDescription}
             readOnly
             className="min-h-[150px] font-mono text-sm"
           />
-        </div>
+        </div><hr>
       )}
       
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">HTML Preview</h2>
+          <h2 className="text-xl font-semibold">HTML Preview :</h2>
           <PreviewControls 
             onCopy={handleCopy}
             htmlContent={htmlContent}
