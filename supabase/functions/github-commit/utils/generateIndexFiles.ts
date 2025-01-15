@@ -26,7 +26,7 @@ export const generateIndexHtml = (jobs: Job[], pageNum: number = 1, customDomain
       <h3><a href="${job.fileName}" class="job-title-link">${job.title}</a></h3>
       <p class="company">${job.company}</p>
       <p class="location">${job.location}</p>
-      <p class="updated">Last updated: <time datetime="${new Date().toISOString()}">${new Date().toLocaleString('en-GB', { 
+      <p class="updated"><time datetime="${new Date().toISOString()}">${new Date().toLocaleString('en-GB', { 
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
