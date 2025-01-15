@@ -23,7 +23,7 @@ export const generateIndexHtml = (jobs: Job[], pageNum: number = 1, customDomain
 
   const jobCards = pageJobs.map(job => `
     <div class="job-card">
-      <h3><a href="${job.fileName}" class="job-title-link">${job.title}</a></h3>
+      <h3><a href="/${job.fileName}" title="${job.title}" class="job-title-link">${job.title}</a></h3>
       <p class="company">${job.company}</p>
       <p class="location">${job.location}</p>
       <p class="updated"><time datetime="${new Date().toISOString()}">${new Date().toLocaleString('en-GB', { 
