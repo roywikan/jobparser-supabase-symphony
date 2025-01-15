@@ -1,14 +1,27 @@
 import { Job } from './types.ts';
+import { fetchLastCommitTimestamp } from './githubApi.ts';
 
 const JOBS_PER_PAGE = 12;
 
-export const generateIndexHtml = (jobs: Job[], pageNum: number = 1, customDomain?: string) => {
+export const generateIndexHtml = async (jobs: Job[], pageNum: number = 1, customDomain?: string, repo?: string) => {
   const sortedJobs = [...jobs].sort((a, b) => b.fileName.localeCompare(a.fileName));
   
   const totalPages = Math.ceil(sortedJobs.length / JOBS_PER_PAGE);
   const startIndex = (pageNum - 1) * JOBS_PER_PAGE;
   const endIndex = startIndex + JOBS_PER_PAGE;
   const pageJobs = sortedJobs.slice(startIndex, endIndex);
+
+  // Fetch commit timestamps for all jobs on this page
+  const jobsWithTimestamps = await Promise.all(pageJobs.map(async (job) => {
+    let timestamp = null;
+    if (repo) {
+      timestamp = await fetchLastCommitTimestamp(repo, job.fileName);
+    }
+    return {
+      ...job,
+      lastCommitTimestamp: timestamp
+    };
+  }));
 
   const effectiveDomain = customDomain || 'uk.job.web.id';
   const currentYear = new Date().getFullYear();
@@ -21,22 +34,35 @@ export const generateIndexHtml = (jobs: Job[], pageNum: number = 1, customDomain
     })
     .join('');
 
-  const jobCards = pageJobs.map(job => `
+  const jobCards = jobsWithTimestamps.map(job => {
+    const timestamp = job.lastCommitTimestamp 
+      ? new Date(job.lastCommitTimestamp).toLocaleString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'UTC'
+        })
+      : new Date().toLocaleString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'UTC'
+        });
+
+    return `
     <div class="job-card">
       <h3><a href="/${job.fileName}" title="${job.title}" class="job-title-link">${job.title}</a></h3>
       <p class="company">${job.company}</p>
       <p class="location">${job.location}</p>
-      <p class="updated"><time datetime="${new Date().toISOString()}">${new Date().toLocaleString('en-GB', { 
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'UTC'
-      })} UTC</time></p>
+      <p class="updated"><time datetime="${job.lastCommitTimestamp || new Date().toISOString()}">${timestamp} UTC</time></p>
       <p class="hashtags">${job.hashtags ? job.hashtags.split(',').map(tag => `#${tag.trim()}`).join(' ') : ''}</p>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   return `<!DOCTYPE html>
 <html lang="en">

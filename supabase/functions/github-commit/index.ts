@@ -60,7 +60,7 @@ serve(async (req) => {
       const totalPages = Math.ceil(jobs.length / JOBS_PER_PAGE);
 
       for (let page = 1; page <= totalPages; page++) {
-        const indexHtml = generateIndexHtml(jobs, page, formattedDomain);
+        const indexHtml = await generateIndexHtml(jobs, page, formattedDomain, repo);
         const fileName = page === 1 ? 'index.html' : `index-${page}.html`;
         await commitFile(repo, fileName, indexHtml, branch);
         console.log(`Generated and committed ${fileName}`);

@@ -22,6 +22,31 @@ export const fetchFileContent = async (downloadUrl: string) => {
   return await response.text();
 };
 
+export const fetchLastCommitTimestamp = async (repo: string, filePath: string) => {
+  try {
+    const response = await fetch(`https://api.github.com/repos/${repo}/commits?path=${filePath}&page=1&per_page=1`, {
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch commit for ${filePath}:`, response.statusText);
+      return null;
+    }
+
+    const commits = await response.json();
+    if (commits && commits.length > 0) {
+      return commits[0].commit.author.date;
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error fetching commit for ${filePath}:`, error);
+    return null;
+  }
+};
+
 export const commitFile = async (repo: string, fileName: string, content: string, branch: string) => {
   console.log(`Committing ${fileName} to ${repo} on branch ${branch}`);
   
