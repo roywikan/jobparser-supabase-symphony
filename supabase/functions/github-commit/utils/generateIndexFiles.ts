@@ -90,6 +90,7 @@ sortedJobs.sort((a, b) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="UK JOBS : ${job.title} {job.company} {job.location}">
     <title>UK Jobs</title>
     <style>
       
@@ -97,7 +98,7 @@ sortedJobs.sort((a, b) => {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         line-height: 1.6;
         color: #333;
-        background-color: #f5f5f5;
+        background-color: #ffffff;
         margin: 0;
         padding: 0;
       }
