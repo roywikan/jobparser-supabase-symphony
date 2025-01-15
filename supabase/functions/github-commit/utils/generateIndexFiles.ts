@@ -97,8 +97,8 @@ sortedJobs.sort((a, b) => {
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         line-height: 1.6;
-        color: #333;
-        background-color: #ffffff;
+        color: #222;
+        background-color: #2563eb12;
         margin: 0;
         padding: 0;
       }
