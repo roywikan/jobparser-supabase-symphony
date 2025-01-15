@@ -4,7 +4,32 @@ export const JOBS_PER_PAGE = 12;
 
 export const generateJobCards = (jobs: Job[], currentPage: number = 1) => {
   // Sort jobs by fileName (newest first)
-  const sortedJobs = [...jobs].sort((a, b) => b.fileName.localeCompare(a.fileName));
+  //const sortedJobs = [...jobs].sort((a, b) => b.fileName.localeCompare(a.fileName));
+  //diganti kode dari chatgpt:
+  const sortedJobs = await Promise.all(jobs.map(async (job) => {
+  let timestamp = null;
+  if (repo) {
+    timestamp = await fetchLastCommitTimestamp(repo, job.fileName);
+  }
+  return {
+    ...job,
+    lastCommitTimestamp: timestamp
+  };
+}));
+
+sortedJobs.sort((a, b) => {
+  const timestampA = a.lastCommitTimestamp ? new Date(a.lastCommitTimestamp).getTime() : 0;
+  const timestampB = b.lastCommitTimestamp ? new Date(b.lastCommitTimestamp).getTime() : 0;
+  return timestampB - timestampA;
+});
+
+ //kode dari chatgpt selesai. 
+
+
+
+
+
+
   
   // Calculate pagination indices
   const startIndex = (currentPage - 1) * JOBS_PER_PAGE;
@@ -15,7 +40,7 @@ export const generateJobCards = (jobs: Job[], currentPage: number = 1) => {
   
   return pageJobs.map(job => `
     <div class="job-card">
-      <h3>${job.title}</h3>
+      <h2>${job.title}</h2>
       <p class="company">${job.company}</p>
       <p class="location">${job.location}</p>
       <a href="${job.fileName}" class="view-job">View Details</a>
