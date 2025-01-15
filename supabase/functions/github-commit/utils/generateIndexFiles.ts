@@ -90,7 +90,7 @@ sortedJobs.sort((a, b) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="UK JOBS : ${job.title} {job.company} {job.location}">
+    <meta name="description" content="UK JOBS ${job.title} {job.company} {job.location}">
     <title>UK Jobs</title>
     <style>
       
