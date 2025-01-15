@@ -4,7 +4,28 @@ import { fetchLastCommitTimestamp } from './githubApi.ts';
 const JOBS_PER_PAGE = 12;
 
 export const generateIndexHtml = async (jobs: Job[], pageNum: number = 1, customDomain?: string, repo?: string) => {
-  const sortedJobs = [...jobs].sort((a, b) => b.fileName.localeCompare(a.fileName));
+  //const sortedJobs = [...jobs].sort((a, b) => b.fileName.localeCompare(a.fileName));
+  //ini kode dari chatGPT:
+  const sortedJobs = await Promise.all(jobs.map(async (job) => {
+  let timestamp = null;
+  if (repo) {
+    timestamp = await fetchLastCommitTimestamp(repo, job.fileName);
+  }
+  return {
+    ...job,
+    lastCommitTimestamp: timestamp
+  };
+}));
+
+sortedJobs.sort((a, b) => {
+  const timestampA = a.lastCommitTimestamp ? new Date(a.lastCommitTimestamp).getTime() : 0;
+  const timestampB = b.lastCommitTimestamp ? new Date(b.lastCommitTimestamp).getTime() : 0;
+  return timestampB - timestampA;
+});
+
+//kode dari chatgpt berhenti di sini.
+
+
   
   const totalPages = Math.ceil(sortedJobs.length / JOBS_PER_PAGE);
   const startIndex = (pageNum - 1) * JOBS_PER_PAGE;
