@@ -76,7 +76,7 @@ sortedJobs.sort((a, b) => {
 
     return `
     <div class="job-card">
-      <h2><a href="/${job.fileName}" title="${job.title}" class="job-title-link">${job.title}</a></h2>
+      <h2><a href="/${job.fileName}" title="${job.title} {job.company} {job.location}" class="job-title-link">${job.title}</a></h2>
       <p class="company">${job.company}</p>
       <p class="location">${job.location}</p>
       <p class="updated"><time datetime="${job.lastCommitTimestamp || new Date().toISOString()}">${timestamp} UTC</time></p>
