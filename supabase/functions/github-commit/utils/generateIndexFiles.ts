@@ -45,7 +45,7 @@ export const generateIndexHtml = (jobs: Job[], pageNum: number = 1, customDomain
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UK Jobs</title>
     <style>
-      /* Critical CSS inlined for performance */
+      
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         line-height: 1.6;
