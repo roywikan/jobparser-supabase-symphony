@@ -101,6 +101,8 @@ export const generateHtmlTemplate = (job: any, date: string, hashtags: any) => `
     ${job.imageUrl ? `<meta property="og:image" content="${job.imageUrl}">` : ''}
     <title>${job.pageTitle}</title>
     <link rel="stylesheet" href="/post.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2447926075248129"
+     crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
