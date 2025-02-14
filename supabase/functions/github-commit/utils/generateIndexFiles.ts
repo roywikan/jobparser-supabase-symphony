@@ -234,6 +234,8 @@ sortedJobs.sort((a, b) => {
         }
       }
     </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2447926075248129"
+     crossorigin="anonymous"></script>
 </head>
 <body>
     <nav class="top-menu">
