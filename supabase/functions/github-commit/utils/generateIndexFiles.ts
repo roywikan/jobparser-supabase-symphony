@@ -75,7 +75,6 @@ sortedJobs.sort((a, b) => {
         });
 
     return `
-    
     <div class="job-card">
       <h2><a href="/${job.fileName}" title="${job.title} ${job.company} ${job.location}" class="job-title-link">${job.title}</a></h2>
       <p class="company">${job.company}</p>
@@ -83,7 +82,6 @@ sortedJobs.sort((a, b) => {
       <p class="updated"><time datetime="${job.lastCommitTimestamp || new Date().toISOString()}">${timestamp} UTC</time></p>
       <p class="hashtags">${job.hashtags ? job.hashtags.split(',').map(tag => `#${tag.trim()}`).join(' ') : ''}</p>
     </div>
-    
   `;
   }).join('');
 
@@ -93,16 +91,12 @@ sortedJobs.sort((a, b) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2447926075248129" crossorigin="anonymous"></script>
 
     <meta name="description" content="UK JOBS ${jobs.length > 0 ? jobs[0]?.title : 'Unknown'} ${jobs.length > 0 ? jobs[0]?.company : ''} ${jobs.length > 0 ? jobs[0]?.location : ''}">
     <title>UK Jobs ${jobs.length > 0 ? jobs[0]?.title : 'Unknown'}</title>
 
-
-
-    
     <style>
-      
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         line-height: 1.6;
@@ -246,22 +240,18 @@ sortedJobs.sort((a, b) => {
         <a href="/" class="menu-item">Home</a>
     </nav>
 
-    
     <header>
          <h1>UK Jobs ${jobs.length > 0 ? jobs[0]?.location : 'Unknown'}</h1>
     </header>
 
-    
     <main class="jobs-grid">
         ${jobCards}
     </main>
 
-    
     <div class="pagination">
         ${paginationLinks}
     </div>
 
-    
     <footer class="site-footer">
         <div class="footer-content">
             <span>&copy; ${currentYear} <a href="https://${effectiveDomain}" class="footer-link">${effectiveDomain}</a></span>
@@ -270,7 +260,6 @@ sortedJobs.sort((a, b) => {
         </div>
     </footer>
 
-    
 </body>
 </html>`;
 };
